@@ -10,6 +10,9 @@ import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.Response;
 import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +27,7 @@ import javax.annotation.Resource;
  * @since 0.1
  */
 @ControllerAdvice
-public class GlobalExceptionAdvice {
+public class GlobalExceptionAdvice implements ApplicationContextAware {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
 
@@ -34,7 +37,6 @@ public class GlobalExceptionAdvice {
     @Resource
     private ResponseFactory responseFactory;
 
-    @Resource
     private ExceptionAliasRegister exceptionAliasRegister;
 
     @Resource
@@ -71,13 +73,20 @@ public class GlobalExceptionAdvice {
         }
 
         //获取已注册的别名
-        ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
-        if (exceptionAliasFor != null) {
-            ResponseStatus responseStatus = responseStatusFactory.newInstance(exceptionAliasFor.code(),
-                    exceptionAliasFor.msg());
-            return responseStatus;
+        if (exceptionAliasRegister != null) {
+            ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
+            if (exceptionAliasFor != null) {
+                ResponseStatus responseStatus = responseStatusFactory.newInstance(exceptionAliasFor.code(),
+                        exceptionAliasFor.msg());
+                return responseStatus;
+            }
         }
 
         return responseStatusFactory.defaultFail();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.exceptionAliasRegister = applicationContext.getBean(ExceptionAliasRegister.class);
     }
 }

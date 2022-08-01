@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 
 import javax.annotation.Resource;
 
@@ -12,13 +13,22 @@ public abstract class AbstractExceptionAliasRegisterConfig implements Applicatio
 
     private Logger logger = LoggerFactory.getLogger(AbstractExceptionAliasRegisterConfig.class);
 
-    @Resource
-    private ExceptionAliasRegister register;
-
     protected abstract void registerAlias(ExceptionAliasRegister register);
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.registerAlias(register);
+    public void setApplicationContext(ApplicationContext applicationContext) {
+
+        try {
+            ExceptionAliasRegister aliasRegister = applicationContext.getBean(ExceptionAliasRegister.class);
+            if (aliasRegister == null) {
+                logger.warn("未从ApplicationContext中获取到ExceptionAliasRegister实例， @ExceptionAliasFor注解将无效");
+                return;
+            }
+            this.registerAlias(aliasRegister);
+        } catch (Exception e) {
+            logger.warn("未从ApplicationContext中获取到ExceptionAliasRegister实例， @ExceptionAliasFor注解将无效", e);
+        }
     }
+
+
 }
