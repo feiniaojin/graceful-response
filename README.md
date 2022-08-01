@@ -3,11 +3,12 @@
 ![](https://img.shields.io/github/license/feiniaojin/graceful-response) 
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 
+# 一、简介
 Graceful Response是一个Spring Boot体系下的优雅响应处理器，属于DDD生态中的基础组件。
 
-# 一、Java Web数据返回的现状
+# 二、Java Web API接口数据返回的现状及解决方案
 
-通常我们现在的Controller代码是这样的：
+通常我们进行Java Web API接口时，大部分的Controller代码是这样的：
 
 ```java
 @GetMapping
@@ -90,7 +91,7 @@ Data data=service.query(params);
 
 以下是一个简单的案例。
 
-接口代码：
+接口Controller代码：
 
 ```java
 @RequestMapping("/get")
@@ -119,8 +120,8 @@ public UserInfoView get(Long id) {
 我们的返回结果已被自动封装到payload字段中。
 
 注：返回结果的格式是可以自定义的，以上的格式只是作者习惯采用的，我们可以根据自己的需要进行封装。
-在本组件的案例工程(https://github.com/feiniaojin/graceful-response-example.git)中,
-提供了封装为以下格式的*ResponseFactory*，详细见`CustomResponseFactoryImpl`。
+在本组件的案例工程( https://github.com/feiniaojin/graceful-response-example.git )中,
+提供了封装为以下格式的`ResponseFactory`，详细见`CustomResponseFactoryImpl`。
 另外一种常见的返回值格式:
 ```json
 {
@@ -157,9 +158,9 @@ public UserInfoView get(Long id) {
     }
 ```
 
-我们可以通过graceful-response自动完成这个过程。
+我们可以通过Graceful Response自动完成这个过程。
 
-(1)创建自定义异常，采用**@ExceptionMapper**注解修饰，注解的`code`属性为返回码，`msg`属性为错误提示信息
+(1)创建自定义异常，采用`@ExceptionMapper`注解修饰，注解的`code`属性为返回码，`msg`属性为错误提示信息
 
 ```java
 @ExceptionMapper(code = 1007, msg = "有内鬼，终止交易")
@@ -168,7 +169,7 @@ public static final class RatException extends RuntimeException {
 }
 ```
 
-(2)service执行具体逻辑，需要抛异常的时候直接抛出去
+(2)service执行具体逻辑，需要抛异常的时候直接抛出去即可，不需要在关心异常与错误码关联的问题
 
 ```java
 public void throwRuntimeException() {
@@ -180,7 +181,7 @@ public void throwRuntimeException() {
 }
 ```
 
-(3)controller调用sercvice
+(3)controller调用service
 
 ```java
 @RequestMapping("/test3")
@@ -204,18 +205,16 @@ public void test3(){
 }
 ```
 
-# 二、外部异常别名
+# 三、外部异常别名
 
-案例工程(https://github.com/feiniaojin/graceful-response-example.git)启动后，
-通过浏览器访问一个不存在的接口，例如http://localhost:9090/example/get2?id=1
+案例工程( https://github.com/feiniaojin/graceful-response-example.git )启动后，
+通过浏览器访问一个不存在的接口，例如 http://localhost:9090/example/get2?id=1 
 
 将会跳转到404页面页面，主要原因是应用内部产生了`NoHandlerFoundException`异常。
 
-这类非自定义的异常，如果需要自定义一个错误码返回，将不得不对每个异常编写Advice逻辑，在Advice中设置错误码和提示信息，
+这类非自定义的异常，如果需要自定义一个错误码返回，将不得不对每个异常编写Advice逻辑，在Advice中设置错误码和提示信息，这样做非常不繁琐。
 
-这样做非常不优雅。
-
-graceful-response可以非常轻松地解决给这类外部异常定义错误码和提示信息的问题。
+Graceful Response可以非常轻松地解决给这类外部异常定义错误码和提示信息的问题。
 
 以下为操作步骤：
 
@@ -245,7 +244,7 @@ public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig
 
 (3)浏览器访问不存在的URL
 
-再次访问http://localhost:9090/example/get2?id=1,服务端将返回以下json，正是在ExceptionAliasFor中定义的内容
+再次访问 http://localhost:9090/example/get2?id=1 ,服务端将返回以下json，正是在ExceptionAliasFor中定义的内容
 
 ```json
 {
@@ -257,7 +256,7 @@ public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig
 }
 ```
 
-# 三、快速入门
+# 四、快速入门
 
 第一步：引入maven依赖
 
@@ -319,6 +318,7 @@ public void test0(){
 见上文
 
 （3）异常别名
+
 见上文
 
 ---
