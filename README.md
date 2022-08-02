@@ -51,14 +51,14 @@ public Response query(Parameter params){
 
 这段代码存在什么问题呢？
 
-* 处理逻辑繁琐
+* 真正的业务逻辑被冗余代码淹没
 
 可以看到，真正执行业务的代码只有
 
 ```java
 Data data=service.query(params);
 ```
-其他代码都是为了把结果封装为特定的格式，例如以下两种格式：
+其他代码都是为了异常封装、把结果封装为特定的格式，例如以下两种格式：
 
 ```json
 {
@@ -102,7 +102,7 @@ public UserInfoView get(Long id) {
 }
 ```
 
-这个接口我们直接返回了`UserInfoView`，但是我们调用接口时，返回的却是按照为以下格式封装好的响应：
+这个接口我们直接返回了`UserInfoView`的实例对象，并没有封装到Response中，但是我们调用接口时，返回的却是按照为以下格式封装好的响应：
 
 ```json
 {
@@ -117,12 +117,14 @@ public UserInfoView get(Long id) {
 }
 ```
 
-我们的返回结果已被自动封装到payload字段中。
+我们的返回结果被自动封装到payload字段中。
 
-注：返回结果的格式是可以自定义的，以上的格式只是作者习惯采用的，我们可以根据自己的需要进行封装。
+注：返回结果的格式是可以自定义的，以上的格式只是作者习惯采用的，我们可以根据自己的需要进行自定义返回的Response格式。
+
 在本组件的案例工程( https://github.com/feiniaojin/graceful-response-example.git )中,
 提供了封装为以下格式的`ResponseFactory`，详细见`CustomResponseFactoryImpl`。
-另外一种常见的返回值格式:
+
+graceful-response-example中自定义的返回值格式:
 ```json
 {
     "code":"0",
@@ -158,7 +160,9 @@ public UserInfoView get(Long id) {
     }
 ```
 
-我们可以通过Graceful Response自动完成这个过程。
+我们可以通过**Graceful Response**优化这个过程：直接抛异常，**Graceful Response**捕获异常、封装Response并set错误码和提示信息。
+
+以下是使用**Graceful Response**进行异常、错误码处理的开发步骤。
 
 (1)创建自定义异常，采用`@ExceptionMapper`注解修饰，注解的`code`属性为返回码，`msg`属性为错误提示信息
 
@@ -172,12 +176,13 @@ public static final class RatException extends RuntimeException {
 (2)service执行具体逻辑，需要抛异常的时候直接抛出去即可，不需要在关心异常与错误码关联的问题
 
 ```java
-public void throwRuntimeException() {
+public void illegalTransaction() {
+  //需要抛异常的时候直接抛
   if (hasRat()) {
     logger.error("有内鬼终止交易");
     throw new RatException();
   }
-  doSomething();
+  doIllegalTransaction();
 }
 ```
 
@@ -187,11 +192,12 @@ public void throwRuntimeException() {
 @RequestMapping("/test3")
 public void test3(){
   logger.info("test3: RuntimeException");
-  exampleService.throwRuntimeException();
+  //Controlelr中不会进行异常处理，也不会手工set错误码，只关心核心操作，其他的统统交给Graceful Response
+  exampleService.illegalTransaction();
 }
 ```
 
-(4)在浏览器中请求controller的/test3方法，将会返回：
+(4)在浏览器中请求controller的/test3方法，有异常时将会返回：
 
 ```json
 {
@@ -210,7 +216,7 @@ public void test3(){
 案例工程( https://github.com/feiniaojin/graceful-response-example.git )启动后，
 通过浏览器访问一个不存在的接口，例如 http://localhost:9090/example/get2?id=1 
 
-将会跳转到404页面页面，主要原因是应用内部产生了`NoHandlerFoundException`异常。
+如果没开启Graceful Response，将会跳转到404页面页面，主要原因是应用内部产生了`NoHandlerFoundException`异常。如果开启了Graceful Response，默认会返回code=1的错误码。
 
 这类非自定义的异常，如果需要自定义一个错误码返回，将不得不对每个异常编写Advice逻辑，在Advice中设置错误码和提示信息，这样做非常不繁琐。
 
@@ -220,13 +226,14 @@ Graceful Response可以非常轻松地解决给这类外部异常定义错误码
 
 (1)创建异常别名，并用`@ExceptionAliasFor`注解修饰
 
-code为发生NoHandlerFoundException时的错误码，msg为提示信息，aliasFor表示将成为哪个异常的别名。
-
 ```java
 @ExceptionAliasFor(code = "1404", msg = "not found", aliasFor = NoHandlerFoundException.class)
 public class NotFoundException extends RuntimeException {
 }
 ```
+
+code为发生NoHandlerFoundException时的错误码，msg为提示信息，aliasFor表示将成为哪个异常的别名。
+
 
 (2)注册异常别名
 创建一个继承了AbstractExceptionAliasRegisterConfig的配置类，在实现的registerAlias方法中进行注册。
