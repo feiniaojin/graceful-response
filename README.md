@@ -4,7 +4,7 @@
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 
 # 一、简介
-Graceful Response是一个Spring Boot体系下的优雅响应处理器，属于DDD生态中的基础组件。
+Graceful Response是一个Spring Boot体系下的优雅响应处理器。
 
 # 二、Java Web API接口数据返回的现状及解决方案
 
