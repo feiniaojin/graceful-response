@@ -139,15 +139,10 @@
                 </plugins>
             </build>
             <distributionManagement>
-                <snapshotRepository>
-                    <id>maven-center-snapshots</id>
-                    <name>Sonatype Nexus Snapshots</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
                 <repository>
                     <id>maven-center-staging</id>
                     <name>Nexus Release Repository</name>
-                    <url>https://oss.sonatype.org/com.example.service/local/staging/deploy/maven2/</url>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
         </profile>

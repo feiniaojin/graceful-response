@@ -1,7 +1,10 @@
 [![vAPppF.jpg](https://s1.ax1x.com/2022/08/01/vAPppF.jpg)](https://imgtu.com/i/vAPppF)
 
-![](https://img.shields.io/github/license/feiniaojin/graceful-response) 
+![](https://img.shields.io/github/license/feiniaojin/graceful-response)
+[![GitHub stars](https://img.shields.io/github/stars/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/network)
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
+![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin.ddd.ecosystem/graceful-response)
 
 # 一、简介
 Graceful Response是一个Spring Boot体系下的优雅响应处理器。
@@ -267,7 +270,7 @@ public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig
 
 第一步：引入maven依赖
 
-目前由于作者比较忙，还没有来得及上传至maven中央仓库，可以克隆源码进行编译，然后直接引入到项目中
+**graceful-response**已发布至maven中央仓库，可以直接引入到项目中，maven依赖如下：
 
 ```xml
 <dependency>
