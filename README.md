@@ -221,7 +221,7 @@ public void test3(){
 
 如果没开启Graceful Response，将会跳转到404页面页面，主要原因是应用内部产生了`NoHandlerFoundException`异常。如果开启了Graceful Response，默认会返回code=1的错误码。
 
-这类非自定义的异常，如果需要自定义一个错误码返回，将不得不对每个异常编写Advice逻辑，在Advice中设置错误码和提示信息，这样做非常不繁琐。
+这类非自定义的异常，如果需要自定义一个错误码返回，将不得不对每个异常编写Advice逻辑，在Advice中设置错误码和提示信息，这样做非常繁琐。
 
 Graceful Response可以非常轻松地解决给这类外部异常定义错误码和提示信息的问题。
 
