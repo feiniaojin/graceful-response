@@ -100,7 +100,7 @@ Data data=service.query(params);
 @RequestMapping("/get")
 @ResponseBody
 public UserInfoView get(Long id) {
-    log.info("id=" + id);
+    log.info("id={}",id);
     return UserInfoView.builder().id(id).name("name" + id).build();
 }
 ```
