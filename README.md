@@ -337,6 +337,3 @@ public void test0(){
 
 公众号: MarkWord
 
-目前正在连载更新《Thinking in DDD》系列文章，未来将会对团队管理、架构方法论进行系列分享，欢迎关注
-[![vA1OFU.jpg](https://s1.ax1x.com/2022/08/01/vA1OFU.jpg)](https://imgtu.com/i/vA1OFU)
-[![vA8Dbt.jpg](https://s1.ax1x.com/2022/08/01/vA8Dbt.jpg)](https://imgtu.com/i/vA8Dbt)
