@@ -1,4 +1,4 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse;
+package com.feiniaojin.gracefulresponse;
 
 import org.springframework.context.annotation.Import;
 

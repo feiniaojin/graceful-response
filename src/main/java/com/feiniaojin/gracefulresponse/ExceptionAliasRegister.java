@@ -1,6 +1,6 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse;
+package com.feiniaojin.gracefulresponse;
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ExceptionAliasFor;
+import com.feiniaojin.gracefulresponse.api.ExceptionAliasFor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +14,7 @@ public class ExceptionAliasRegister {
 
     /**
      * 注册
+     *
      * @param throwableClass
      * @return
      */
@@ -21,7 +22,7 @@ public class ExceptionAliasRegister {
 
         ExceptionAliasFor exceptionAliasFor = throwableClass.getAnnotation(ExceptionAliasFor.class);
         if (exceptionAliasFor == null) {
-            logger.error("注册了未加ExceptionAliasFor的异常", throwableClass);
+            logger.error("注册了未加ExceptionAliasFor的异常,throwableClass={}", throwableClass);
             throw new RuntimeException();
         }
 
@@ -32,6 +33,7 @@ public class ExceptionAliasRegister {
 
     /**
      * 获取
+     *
      * @param tClazz
      * @return
      */

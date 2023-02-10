@@ -1,6 +1,6 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.api;
+package com.feiniaojin.gracefulresponse.api;
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.ResponseStatus;
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
 /**
  * @author <a href="mailto:qinyujie@gingo.cn">Yujie</a>

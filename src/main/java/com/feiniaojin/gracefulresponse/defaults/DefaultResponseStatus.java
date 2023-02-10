@@ -1,34 +1,16 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.defaults;
+package com.feiniaojin.gracefulresponse.defaults;
 
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.ResponseStatus;
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
 /**
- * <p>
- * 默认的响应码枚举类，通常用于成功和失败的场合.
- * </p>
- * <p>
- * 成功：{@code DEFAULT_SUCCESS}
- * </p>
- * <p>
- * 失败：{@code DEFAULT_FAIL}.
- * </p>
+ * 默认的ResponseStatus实现
  *
  * @author <a href="mailto:943868899@qq.com">Yujie</a>
  * @version 0.1
  * @since 0.1
  */
 public class DefaultResponseStatus implements ResponseStatus {
-
-    /**
-     * {@code DEFAULT_SUCCESS} 请求处理成功.
-     */
-    public static final DefaultResponseStatus DEFAULT_SUCCESS = new DefaultResponseStatus("0", "ok");
-
-    /**
-     * {@code DEFAULT_FAIL} 请求处理失败.
-     */
-    public static final DefaultResponseStatus DEFAULT_FAIL = new DefaultResponseStatus("1", "error");
 
     /**
      * 响应码.

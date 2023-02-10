@@ -1,7 +1,7 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.api;
+package com.feiniaojin.gracefulresponse.api;
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.Response;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.ResponseStatus;
+import com.feiniaojin.gracefulresponse.data.Response;
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
 /**
  * ResponseBean的工厂类，用于生成ResponseBean.

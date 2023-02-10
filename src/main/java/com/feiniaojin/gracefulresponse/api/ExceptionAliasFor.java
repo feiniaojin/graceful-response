@@ -1,4 +1,4 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.api;
+package com.feiniaojin.gracefulresponse.api;
 
 
 import java.lang.annotation.*;

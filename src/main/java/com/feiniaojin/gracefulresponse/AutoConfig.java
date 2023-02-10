@@ -1,13 +1,13 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse;
+package com.feiniaojin.gracefulresponse;
 
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.advice.GlobalExceptionAdvice;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.advice.NotVoidResponseBodyAdvice;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.advice.VoidResponseBodyAdvice;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ResponseFactory;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ResponseStatusFactory;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.defaults.DefaultResponseFactory;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.defaults.DefaultResponseStatusFactoryImpl;
+import com.feiniaojin.gracefulresponse.advice.GlobalExceptionAdvice;
+import com.feiniaojin.gracefulresponse.advice.NotVoidResponseBodyAdvice;
+import com.feiniaojin.gracefulresponse.advice.VoidResponseBodyAdvice;
+import com.feiniaojin.gracefulresponse.api.ResponseFactory;
+import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
+import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
+import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatusFactoryImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

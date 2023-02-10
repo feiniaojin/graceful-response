@@ -1,4 +1,4 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.data;
+package com.feiniaojin.gracefulresponse.data;
 
 import java.util.List;
 

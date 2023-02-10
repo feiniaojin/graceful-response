@@ -1,13 +1,13 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.advice;
+package com.feiniaojin.gracefulresponse.advice;
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.ExceptionAliasRegister;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.GracefulResponseProperties;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ExceptionAliasFor;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ExceptionMapper;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ResponseFactory;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ResponseStatusFactory;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.Response;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.ResponseStatus;
+import com.feiniaojin.gracefulresponse.ExceptionAliasRegister;
+import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import com.feiniaojin.gracefulresponse.api.ExceptionAliasFor;
+import com.feiniaojin.gracefulresponse.api.ExceptionMapper;
+import com.feiniaojin.gracefulresponse.api.ResponseFactory;
+import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
+import com.feiniaojin.gracefulresponse.data.Response;
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -67,18 +67,16 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
         ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
 
         if (exceptionMapper != null) {
-            ResponseStatus responseStatus = responseStatusFactory.newInstance(exceptionMapper.code(),
+            return responseStatusFactory.newInstance(exceptionMapper.code(),
                     exceptionMapper.msg());
-            return responseStatus;
         }
 
         //获取已注册的别名
         if (exceptionAliasRegister != null) {
             ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
             if (exceptionAliasFor != null) {
-                ResponseStatus responseStatus = responseStatusFactory.newInstance(exceptionAliasFor.code(),
+                return responseStatusFactory.newInstance(exceptionAliasFor.code(),
                         exceptionAliasFor.msg());
-                return responseStatus;
             }
         }
 

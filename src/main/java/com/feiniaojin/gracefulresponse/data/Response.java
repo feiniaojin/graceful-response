@@ -1,4 +1,4 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.data;
+package com.feiniaojin.gracefulresponse.data;
 
 /**
  * @author <a href="mailto:qinyujie@gingo.cn">Yujie</a>

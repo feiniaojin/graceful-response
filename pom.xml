@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.feiniaojin.ddd.ecosystem</groupId>
+    <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
     <name>Graceful Response</name>
     <description>Help Spring Boot web project responses gracefully!</description>
     <url>https://github.com/feiniaojin/graceful-response.git</url>
@@ -38,16 +38,11 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring.boot.version>2.7.0</spring.boot.version>
+        <spring.boot.version>2.7.8</spring.boot.version>
         <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
-        </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -66,11 +61,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-            <version>${spring.boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
     </dependencies>

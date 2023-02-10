@@ -1,9 +1,7 @@
-package com.feiniaojin.ddd.ecosystem.gracefulresponse.advice;
+package com.feiniaojin.gracefulresponse.advice;
 
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.api.ResponseFactory;
-import com.feiniaojin.ddd.ecosystem.gracefulresponse.data.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.feiniaojin.gracefulresponse.api.ResponseFactory;
+import com.feiniaojin.gracefulresponse.data.Response;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -27,9 +25,7 @@ import java.util.Objects;
 @ControllerAdvice
 @Order(value = 1000)
 public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
-
-    private final Logger logger = LoggerFactory.getLogger(NotVoidResponseBodyAdvice.class);
-
+    
     @Resource
     private ResponseFactory responseFactory;
 
