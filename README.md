@@ -456,7 +456,7 @@ public class CustomResponseImpl implements Response {
 将CustomResponseImpl的全限定名配置到gr.responseClassFullName属性。
 
 ```properties
-gr.responseClassFullName:com.feiniaojin.gracefuresponse.example.config.CustomResponseImpl
+gr.responseClassFullName=com.feiniaojin.gracefuresponse.example.config.CustomResponseImpl
 ```
 
 注意，配置gr.responseClassFullName后，gr.responseStyle将不再生效。
