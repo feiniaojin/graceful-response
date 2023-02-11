@@ -4,7 +4,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/network)
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
-![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin.ddd.ecosystem/graceful-response)
+![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin/graceful-response)
 
 # Graceful Response
 
