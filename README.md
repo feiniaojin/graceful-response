@@ -464,18 +464,31 @@ gr.responseClassFullName:com.feiniaojin.gracefuresponse.example.config.CustomRes
 ## 5. 常用配置
 
 - gr.printExceptionInGlobalAdvice
+
   是否打印异常日志，默认为false
+
 - gr.responseClassFullName
+
   自定义Response类的全限定名，默认为空。 配置gr.responseClassFullName后，gr.responseStyle将不再生效
+
 - gr.responseStyle
+
   Response风格，不配置默认为0
+
 - gr.defaultSuccessCode
+
   自定义的成功响应码，不配置则为0
+
 - gr.defaultSuccessMsg
+
   自定义的成功提示，默认为ok
+
 - gr.defaultFailCode
+
   自定义的失败响应码，默认为1
+
 - gr.defaultFailMsg
+
   自定义的失败提示，默认为error
 
 ---
