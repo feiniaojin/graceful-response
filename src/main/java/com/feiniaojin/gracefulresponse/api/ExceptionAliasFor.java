@@ -31,6 +31,13 @@ public @interface ExceptionAliasFor {
     String msg() default "Poor network quality!";
 
     /**
+     * 异常渲染器
+     *
+     * @return 异常对应的提示信息
+     */
+    Class<? extends ExceptionRenderer> renderer() default ExceptionRenderer.class;
+
+    /**
      * 作为某个异常的别名
      *
      * @return

@@ -2,12 +2,8 @@ package com.feiniaojin.gracefulresponse.advice;
 
 import com.feiniaojin.gracefulresponse.ExceptionAliasRegister;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
-import com.feiniaojin.gracefulresponse.api.ExceptionAliasFor;
-import com.feiniaojin.gracefulresponse.api.ExceptionMapper;
-import com.feiniaojin.gracefulresponse.api.ResponseFactory;
-import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
+import com.feiniaojin.gracefulresponse.api.*;
 import com.feiniaojin.gracefulresponse.data.Response;
-import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -54,33 +50,45 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
         if (gracefulResponseProperties.isPrintExceptionInGlobalAdvice()) {
             logger.error("GlobalExceptionAdvice捕获到异常", throwable);
         }
-        //校验异常转自定义异常
-        Class<? extends Throwable> throwableClass = throwable.getClass();
 
-        ResponseStatus statusLine = generateResponseStatus(throwableClass);
-
-        return responseFactory.newInstance(statusLine);
+        return generateResponse(throwable);
     }
 
-    private ResponseStatus generateResponseStatus(Class<? extends Throwable> clazz) {
+    private Response generateResponse(Throwable throwable) {
 
-        ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
+        Class<? extends Throwable> throwableClass = throwable.getClass();
+        ExceptionMapper mapper = throwableClass.getAnnotation(ExceptionMapper.class);
 
-        if (exceptionMapper != null) {
-            return responseStatusFactory.newInstance(exceptionMapper.code(),
-                    exceptionMapper.msg());
+        if (mapper != null) {
+            if (mapper.renderer() != ExceptionRenderer.class) {
+                return renderResponse(mapper.renderer(), throwable);
+            } else {
+                return responseFactory.newInstance(responseStatusFactory.newInstance(mapper.code(), mapper.msg()));
+            }
         }
 
         //获取已注册的别名
         if (exceptionAliasRegister != null) {
-            ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
-            if (exceptionAliasFor != null) {
-                return responseStatusFactory.newInstance(exceptionAliasFor.code(),
-                        exceptionAliasFor.msg());
+            ExceptionAliasFor alias = exceptionAliasRegister.getExceptionAliasFor(throwableClass);
+            if (alias != null) {
+                if (alias.renderer() != ExceptionRenderer.class) {
+                    return renderResponse(alias.renderer(), throwable);
+                } else {
+                    return responseFactory.newInstance(responseStatusFactory.newInstance(alias.code(), alias.msg()));
+                }
             }
         }
 
-        return responseStatusFactory.defaultFail();
+        return responseFactory.newInstance(responseStatusFactory.defaultFail());
+    }
+
+    private Response renderResponse(Class<? extends ExceptionRenderer> rendererClass, Throwable throwable) {
+        try {
+            ExceptionRenderer renderer = rendererClass.newInstance();
+            return renderer.render(throwable, responseFactory, responseStatusFactory);
+        } catch (Exception e) {
+            return responseFactory.newFailInstance();
+        }
     }
 
     @Override
