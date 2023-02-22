@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
-import java.util.Collections;
-
 public class DefaultResponseImplStyle1 implements Response {
 
     private String code;
 
     private String msg;
 
-    private Object data = Collections.emptyMap();
+    private Object data = null;
 
     @Override
     public void setStatus(ResponseStatus statusLine) {
