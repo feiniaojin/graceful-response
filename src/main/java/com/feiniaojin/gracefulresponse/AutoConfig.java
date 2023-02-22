@@ -8,8 +8,15 @@ import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatusFactoryImpl;
+import com.feiniaojin.gracefulresponse.feign.ResponseDecoder;
+import feign.codec.Decoder;
+import feign.optionals.OptionalDecoder;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
+import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -57,5 +64,11 @@ public class AutoConfig {
     @Bean
     public ExceptionAliasRegister exceptionAliasRegister() {
         return new ExceptionAliasRegister();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(value = {SpringDecoder.class})
+    public Decoder feignDecoder(ObjectProvider<HttpMessageConverters> messageConverters, ResponseFactory responseFactory) {
+        return new OptionalDecoder((new ResponseEntityDecoder(new ResponseDecoder(new SpringDecoder(messageConverters), responseFactory))));
     }
 }

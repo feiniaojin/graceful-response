@@ -12,6 +12,7 @@ import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 public interface ResponseFactory {
 
 
+    Class<?> responseClass();
     /**
      * 创建新的空响应.
      *
