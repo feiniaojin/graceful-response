@@ -49,6 +49,7 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
      * @return 统一返回包装后的结果
      */
     @ExceptionHandler({Throwable.class})
+    @org.springframework.web.bind.annotation.ResponseStatus
     @ResponseBody
     public Response exceptionHandler(Throwable throwable) {
         if (gracefulResponseProperties.isPrintExceptionInGlobalAdvice()) {

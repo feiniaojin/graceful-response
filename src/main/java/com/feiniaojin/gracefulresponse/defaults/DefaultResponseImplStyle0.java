@@ -4,8 +4,6 @@ package com.feiniaojin.gracefulresponse.defaults;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
-import java.util.Collections;
-
 /**
  * 默认的Response实现
  * 包装成统一响应的JavaBean.
@@ -14,16 +12,16 @@ import java.util.Collections;
  * @version 0.1
  * @since 0.1
  */
-public class DefaultResponseImplStyle0 implements Response {
+public class DefaultResponseImplStyle0<T> implements Response<T> {
 
     private ResponseStatus status;
     
-    private Object payload = Collections.emptyMap();
+    private T payload = null;
 
     public DefaultResponseImplStyle0() {
     }
 
-    public DefaultResponseImplStyle0(Object payload) {
+    public DefaultResponseImplStyle0(T payload) {
         this.payload = payload;
     }
 
@@ -38,12 +36,12 @@ public class DefaultResponseImplStyle0 implements Response {
     }
 
     @Override
-    public void setPayload(Object obj) {
+    public void setPayload(T obj) {
         this.payload = obj;
     }
 
     @Override
-    public Object getPayload() {
+    public T getPayload() {
         return payload;
     }
 }

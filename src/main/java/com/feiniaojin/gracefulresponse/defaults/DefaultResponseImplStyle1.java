@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
-import java.util.Collections;
-
-public class DefaultResponseImplStyle1 implements Response {
+public class DefaultResponseImplStyle1<T> implements Response<T> {
 
     private String code;
 
     private String msg;
 
-    private Object data = Collections.emptyMap();
+    private T data = null;
 
     @Override
     public void setStatus(ResponseStatus statusLine) {
@@ -23,18 +21,18 @@ public class DefaultResponseImplStyle1 implements Response {
     @Override
     @JsonIgnore
     public ResponseStatus getStatus() {
-        return null;
+        return new ResponseStatus(code, msg);
     }
 
     @Override
-    public void setPayload(Object payload) {
+    public void setPayload(T payload) {
         this.data = payload;
     }
 
     @Override
     @JsonIgnore
-    public Object getPayload() {
-        return null;
+    public T getPayload() {
+        return data;
     }
 
     public String getCode() {
@@ -53,11 +51,11 @@ public class DefaultResponseImplStyle1 implements Response {
         this.msg = msg;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

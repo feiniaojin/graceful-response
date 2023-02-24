@@ -4,7 +4,7 @@ package com.feiniaojin.gracefulresponse.data;
  * @author <a href="mailto:qinyujie@gingo.cn">Yujie</a>
  * @version 0.1
  */
-public interface Response {
+public interface Response<T> {
 
     /**
      * 设置响应行
@@ -25,12 +25,12 @@ public interface Response {
      *
      * @param payload 设置的响应数据.
      */
-    void setPayload(Object payload);
+    void setPayload(T payload);
 
     /**
      * 获得响应数据.
      *
      * @return
      */
-    Object getPayload();
+    T getPayload();
 }

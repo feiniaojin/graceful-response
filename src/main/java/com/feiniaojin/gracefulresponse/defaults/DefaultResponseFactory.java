@@ -34,32 +34,34 @@ public class DefaultResponseFactory implements ResponseFactory {
     private GracefulResponseProperties properties;
 
     @Override
-    public Response newEmptyInstance() {
+    public Class<?> getResponseClass() {
         try {
             String responseClassFullName = properties.getResponseClassFullName();
 
-            //配置了Response的全限定名，即自定义了Response，用配置的进行返回
             if (StringUtils.hasLength(responseClassFullName)) {
-                Object newInstance = Class.forName(responseClassFullName).newInstance();
-                return (Response) newInstance;
+                return Class.forName(responseClassFullName);
             } else {
-                //没有配Response的全限定名，则创建DefaultResponse
-                return generateDefaultResponse();
+                Integer responseStyle = properties.getResponseStyle();
+                if (Objects.isNull(responseStyle) || RESPONSE_STYLE_0.equals(responseStyle)) {
+                    return DefaultResponseImplStyle0.class;
+                } else if (RESPONSE_STYLE_1.equals(responseStyle)) {
+                    return DefaultResponseImplStyle1.class;
+                } else {
+                    logger.error("不支持的Response style类型,responseStyle={}", responseStyle);
+                    throw new IllegalArgumentException("不支持的Response style类型");
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Response generateDefaultResponse() {
-        Integer responseStyle = properties.getResponseStyle();
-        if (Objects.isNull(responseStyle) || RESPONSE_STYLE_0.equals(responseStyle)) {
-            return new DefaultResponseImplStyle0();
-        } else if (RESPONSE_STYLE_1.equals(responseStyle)) {
-            return new DefaultResponseImplStyle1();
-        } else {
-            logger.error("不支持的Response style类型,responseStyle={}", responseStyle);
-            throw new IllegalArgumentException("不支持的Response style类型");
+    @Override
+    public Response newEmptyInstance() {
+        try {
+            return (Response) getResponseClass().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

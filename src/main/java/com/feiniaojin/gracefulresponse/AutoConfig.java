@@ -7,7 +7,6 @@ import com.feiniaojin.gracefulresponse.advice.VoidResponseBodyAdvice;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
-import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatusFactoryImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +50,7 @@ public class AutoConfig {
     @Bean
     @ConditionalOnMissingBean(value = {ResponseStatusFactory.class})
     public ResponseStatusFactory responseStatusFactory() {
-        return new DefaultResponseStatusFactoryImpl();
+        return new ResponseStatusFactory();
     }
 
     @Bean
