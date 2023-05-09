@@ -1,6 +1,7 @@
 package com.feiniaojin.gracefulresponse.advice;
 
 import com.feiniaojin.gracefulresponse.ExceptionAliasRegister;
+import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.api.ExceptionAliasFor;
 import com.feiniaojin.gracefulresponse.api.ExceptionMapper;
@@ -54,15 +55,23 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
         if (gracefulResponseProperties.isPrintExceptionInGlobalAdvice()) {
             logger.error("GlobalExceptionAdvice捕获到异常", throwable);
         }
-        //校验异常转自定义异常
-        Class<? extends Throwable> throwableClass = throwable.getClass();
-
-        ResponseStatus statusLine = generateResponseStatus(throwableClass);
+        ResponseStatus statusLine;
+        if (throwable instanceof GracefulResponseException) {
+            statusLine = generateFromFrameworkExceptionInstance((GracefulResponseException) throwable);
+        } else {
+            //校验异常转自定义异常
+            statusLine = generateResponseStatusFromExceptionClass(throwable.getClass());
+        }
 
         return responseFactory.newInstance(statusLine);
     }
 
-    private ResponseStatus generateResponseStatus(Class<? extends Throwable> clazz) {
+    private ResponseStatus generateFromFrameworkExceptionInstance(GracefulResponseException exception) {
+        return responseStatusFactory.newInstance(exception.getCode(),
+                exception.getMsg());
+    }
+
+    private ResponseStatus generateResponseStatusFromExceptionClass(Class<? extends Throwable> clazz) {
 
         ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
 
