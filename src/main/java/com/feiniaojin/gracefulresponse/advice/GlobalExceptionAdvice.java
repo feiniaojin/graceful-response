@@ -57,21 +57,21 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
         }
         ResponseStatus statusLine;
         if (throwable instanceof GracefulResponseException) {
-            statusLine = generateFromFrameworkExceptionInstance((GracefulResponseException) throwable);
+            statusLine = fromGracefulResponseExceptionInstance((GracefulResponseException) throwable);
         } else {
             //校验异常转自定义异常
-            statusLine = generateResponseStatusFromExceptionClass(throwable.getClass());
+            statusLine = fromExceptionClass(throwable.getClass());
         }
 
         return responseFactory.newInstance(statusLine);
     }
 
-    private ResponseStatus generateFromFrameworkExceptionInstance(GracefulResponseException exception) {
+    private ResponseStatus fromGracefulResponseExceptionInstance(GracefulResponseException exception) {
         return responseStatusFactory.newInstance(exception.getCode(),
                 exception.getMsg());
     }
 
-    private ResponseStatus generateResponseStatusFromExceptionClass(Class<? extends Throwable> clazz) {
+    private ResponseStatus fromExceptionClass(Class<? extends Throwable> clazz) {
 
         ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
 
