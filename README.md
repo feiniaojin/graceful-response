@@ -6,9 +6,7 @@
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 ![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin/graceful-response)
 
-# Graceful Response
-
-## 1. 简介
+# 1. 简介
 
 Graceful Response是一个Spring Boot体系下的优雅响应处理器，使用Graceful Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
 
@@ -16,7 +14,7 @@ Graceful Response是一个Spring Boot体系下的优雅响应处理器，使用G
 
 本项目案例工程代码：https://github.com/feiniaojin/graceful-response-example.git
 
-## 2. Java Web API接口数据返回的现状及解决方案
+# 2. Java Web API接口数据返回的现状及解决方案
 
 通常我们进行Java Web API接口时，大部分的Controller代码是这样的：
 
@@ -86,9 +84,9 @@ Data data=service.query(params);
 
 现在，在引入**Graceful Response**组件后，我们只要直接返回业务结果，**Graceful Response**即可自动完成response的格式封装。
 
-## 3. 快速入门
+# 3. 快速入门
 
-### 3.1 引入maven依赖
+## 3.1 引入maven依赖
 
 **graceful-response**已发布至maven中央仓库，可以直接引入到项目中，maven依赖如下：
 
@@ -101,7 +99,7 @@ Data data=service.query(params);
 </dependency>
 ```
 
-### 3.2 在启动类中引入@EnableGracefulResponse注解
+## 3.2 在启动类中引入@EnableGracefulResponse注解
 
 ```java
 
@@ -114,7 +112,7 @@ public class ExampleApplication {
 }
 ```
 
-### 3.3 Controller方法直接返回结果
+## 3.3 Controller方法直接返回结果
 
 - 普通的查询
 
@@ -175,7 +173,7 @@ public class Controller {
 }
 ```
 
-### 3.4 Service方法业务处理
+## 3.4 Service方法业务处理
 
 在引入Graceful Response后，Service将：
 
@@ -231,9 +229,40 @@ public class NotFoundException extends RuntimeException {
 
 > 验证：启动example工程后，请求http://localhost:9090/example/notfound
 
-## 4. 进阶用法
+## 3.5 通用异常类和通用工具类
 
-### 4.1 Graceful Response异常错误码处理
+`@ExceptionMapper`设计的初衷，是将异常与错误码关联起来，用户只需要抛异常，不需要再关注异常与错误码的对应关系。
+
+部分用户反馈，希望在不自定义新异常类的情况下，也能可以按照预期返回错误码和异常信息，因此从`2.1`版本开始，新增了`GracefulResponseException`异常类，用户只需要抛出该异常即可。
+
+```java
+public class Service {
+  
+  public void method() {
+    throw new GracefulResponseException("自定义的错误码","自定义的错误信息");
+  }
+}
+```
+为简化使用，从`2.1`版本开始提供了`GracefulResponse`通用工具类，在需要抛出`GracefulResponseException`时，只需要调用`raiseException`方法即可。 这样做的目的是将用户的关注点从异常转移到错误码。
+
+示例如下：
+
+```java
+public class Service {
+
+    public void method() {
+        
+        //当condition==true时，抛出GracefulResponseException异常，返回自定义的错误码和错误信息
+        if (condition) {
+            GracefulResponse.raiseException("自定义的错误码", "自定义的错误信息");
+        }
+    }
+}
+```
+
+# 4. 进阶用法
+
+## 4.1 Graceful Response异常错误码处理
 
 以下是使用**Graceful Response**进行异常、错误码处理的开发步骤。
 
@@ -290,7 +319,7 @@ public class Controller {
 }
 ```
 
-### 4.2 外部异常别名
+## 4.2 外部异常别名
 
 案例工程( https://github.com/feiniaojin/graceful-response-example.git )启动后，
 通过浏览器访问一个不存在的接口，例如 http://localhost:9090/example/get2?id=1
@@ -348,7 +377,7 @@ public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig
 }
 ```
 
-### 4.3 自定义Response格式
+## 4.3 自定义Response格式
 
 Graceful Response内置了两种风格的响应格式，并通过`gr.responseStyle`进行配置
 
@@ -461,7 +490,7 @@ gr.responseClassFullName=com.feiniaojin.gracefuresponse.example.config.CustomRes
 
 注意，配置gr.responseClassFullName后，gr.responseStyle将不再生效。
 
-## 5. 常用配置
+# 5. 常用配置
 
 - gr.printExceptionInGlobalAdvice
 
