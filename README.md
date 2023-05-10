@@ -12,7 +12,7 @@ Graceful Response是一个Spring Boot体系下的优雅响应处理器，使用G
 
 强烈推荐你花3分钟学会它！
 
-本项目案例工程代码：https://github.com/feiniaojin/graceful-response-example.git
+本项目案例工程代码：https://github.com/feiniaojin/graceful-response-example.git ，注意选择最新版本的分支。
 
 # 2. Java Web API接口数据返回的现状及解决方案
 
@@ -95,9 +95,10 @@ Data data=service.query(params);
 <dependency>
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 ```
+目前最新版本为`2.1`。
 
 ## 3.2 在启动类中引入@EnableGracefulResponse注解
 
