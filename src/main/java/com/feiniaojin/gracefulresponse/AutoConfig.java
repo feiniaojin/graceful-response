@@ -3,6 +3,7 @@ package com.feiniaojin.gracefulresponse;
 
 import com.feiniaojin.gracefulresponse.advice.GlobalExceptionAdvice;
 import com.feiniaojin.gracefulresponse.advice.NotVoidResponseBodyAdvice;
+import com.feiniaojin.gracefulresponse.advice.ValidationExceptionAdvice;
 import com.feiniaojin.gracefulresponse.advice.VoidResponseBodyAdvice;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
@@ -28,6 +29,12 @@ public class AutoConfig {
     @ConditionalOnMissingBean(value = GlobalExceptionAdvice.class)
     public GlobalExceptionAdvice globalExceptionAdvice() {
         return new GlobalExceptionAdvice();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(value = ValidationExceptionAdvice.class)
+    public ValidationExceptionAdvice validationAdvice() {
+        return new ValidationExceptionAdvice();
     }
 
     @Bean

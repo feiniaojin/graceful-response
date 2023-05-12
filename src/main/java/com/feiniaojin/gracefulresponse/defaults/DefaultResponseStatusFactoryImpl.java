@@ -28,10 +28,10 @@ public class DefaultResponseStatusFactoryImpl implements ResponseStatusFactory {
     }
 
     @Override
-    public ResponseStatus defaultFail() {
+    public ResponseStatus defaultError() {
         DefaultResponseStatus defaultResponseStatus = new DefaultResponseStatus();
-        defaultResponseStatus.setCode(properties.getDefaultFailCode());
-        defaultResponseStatus.setMsg(properties.getDefaultFailMsg());
+        defaultResponseStatus.setCode(properties.getDefaultErrorCode());
+        defaultResponseStatus.setMsg(properties.getDefaultErrorMsg());
         return defaultResponseStatus;
     }
 

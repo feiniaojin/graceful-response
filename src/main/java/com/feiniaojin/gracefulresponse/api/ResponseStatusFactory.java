@@ -19,7 +19,7 @@ public interface ResponseStatusFactory {
      *
      * @return
      */
-    ResponseStatus defaultFail();
+    ResponseStatus defaultError();
 
 
     /**

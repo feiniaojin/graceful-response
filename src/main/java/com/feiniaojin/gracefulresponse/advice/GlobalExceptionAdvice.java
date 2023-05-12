@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +29,7 @@ import javax.annotation.Resource;
  * @since 0.1
  */
 @ControllerAdvice
+@Order(200)
 public class GlobalExceptionAdvice implements ApplicationContextAware {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
@@ -89,7 +91,7 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
             }
         }
 
-        return responseStatusFactory.defaultFail();
+        return responseStatusFactory.defaultError();
     }
 
     @Override

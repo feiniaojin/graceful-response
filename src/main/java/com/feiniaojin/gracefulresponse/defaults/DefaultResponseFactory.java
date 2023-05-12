@@ -87,7 +87,7 @@ public class DefaultResponseFactory implements ResponseFactory {
     @Override
     public Response newFailInstance() {
         Response bean = this.newEmptyInstance();
-        bean.setStatus(responseStatusFactory.defaultFail());
+        bean.setStatus(responseStatusFactory.defaultError());
         return bean;
     }
 

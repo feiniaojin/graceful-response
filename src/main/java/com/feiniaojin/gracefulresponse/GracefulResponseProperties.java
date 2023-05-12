@@ -1,5 +1,6 @@
 package com.feiniaojin.gracefulresponse;
 
+import com.feiniaojin.gracefulresponse.defaults.DefaultConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -31,22 +32,27 @@ public class GracefulResponseProperties {
     /**
      * 默认的成功返回码
      */
-    private String defaultSuccessCode = "0";
+    private String defaultSuccessCode = DefaultConstants.DEFAULT_SUCCESS_CODE;
 
     /**
      * 默认的成功提示
      */
-    private String defaultSuccessMsg = "ok";
+    private String defaultSuccessMsg = DefaultConstants.DEFAULT_SUCCESS_MSG;
 
     /**
      * 默认的失败码
      */
-    private String defaultFailCode = "1";
+    private String defaultErrorCode = DefaultConstants.DEFAULT_ERROR_CODE;
 
     /**
      * 默认的失败提示
      */
-    private String defaultFailMsg = "error";
+    private String defaultErrorMsg = DefaultConstants.DEFAULT_ERROR_MSG;
+
+    /**
+     * Validate异常码，不提供的话默认DefaultConstants.DEFAULT_ERROR_CODE
+     */
+    private String defaultValidateErrorCode = DefaultConstants.DEFAULT_ERROR_CODE;
 
     public boolean isUseValidationMsg() {
         return useValidationMsg;
@@ -80,20 +86,20 @@ public class GracefulResponseProperties {
         this.defaultSuccessMsg = defaultSuccessMsg;
     }
 
-    public String getDefaultFailCode() {
-        return defaultFailCode;
+    public String getDefaultErrorCode() {
+        return defaultErrorCode;
     }
 
-    public void setDefaultFailCode(String defaultFailCode) {
-        this.defaultFailCode = defaultFailCode;
+    public void setDefaultErrorCode(String defaultErrorCode) {
+        this.defaultErrorCode = defaultErrorCode;
     }
 
-    public String getDefaultFailMsg() {
-        return defaultFailMsg;
+    public String getDefaultErrorMsg() {
+        return defaultErrorMsg;
     }
 
-    public void setDefaultFailMsg(String defaultFailMsg) {
-        this.defaultFailMsg = defaultFailMsg;
+    public void setDefaultErrorMsg(String defaultErrorMsg) {
+        this.defaultErrorMsg = defaultErrorMsg;
     }
 
     public String getResponseClassFullName() {
@@ -110,5 +116,13 @@ public class GracefulResponseProperties {
 
     public void setResponseStyle(Integer responseStyle) {
         this.responseStyle = responseStyle;
+    }
+
+    public String getDefaultValidateErrorCode() {
+        return defaultValidateErrorCode;
+    }
+
+    public void setDefaultValidateErrorCode(String defaultValidateErrorCode) {
+        this.defaultValidateErrorCode = defaultValidateErrorCode;
     }
 }

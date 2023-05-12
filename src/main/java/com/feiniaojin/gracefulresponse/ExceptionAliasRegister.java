@@ -26,7 +26,10 @@ public class ExceptionAliasRegister {
             throw new RuntimeException();
         }
 
-        aliasForMap.put(exceptionAliasFor.aliasFor(), exceptionAliasFor);
+        Class<? extends Throwable>[] classes = exceptionAliasFor.aliasFor();
+        for (Class<? extends Throwable> c : classes) {
+            aliasForMap.put(c, exceptionAliasFor);
+        }
 
         return this;
     }
