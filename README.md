@@ -8,7 +8,7 @@
 
 # 1. 简介
 
-Graceful Response是一个Spring Boot体系下的优雅响应处理器，使用Graceful Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
+Graceful Response是一个Spring Boot体系下的优雅响应处理器，提供一站式统一返回值封装、全局异常处理、自定义异常错误码等功能，使用Graceful Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
 
 强烈推荐你花3分钟学会它！
 
@@ -95,10 +95,10 @@ Data data=service.query(params);
 <dependency>
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>2.1</version>
+    <version>3.0</version>
 </dependency>
 ```
-目前最新版本为`2.1`。
+目前最新版本为`3.0`。
 
 ## 3.2 在启动类中引入@EnableGracefulResponse注解
 
@@ -263,7 +263,7 @@ public class Service {
 
 ## 3.6 参数校验异常以及错误码
 
-在3.0版本以前，如果validation发生了校验异常，Graceful Response在默认情况下将会捕获并返回code=1，参数校验发生的异常信息会丢失。如果使用异常别名，可以对大的校验异常返回统一的错误码，但是不够灵活并且依旧没有解决异常提示信息的问题。
+在3.0版本以前，如果validation发生了校验异常，Graceful Response在默认情况下会捕获并返回code=1，参数校验发生的异常信息会丢失；如果使用异常别名功能，可以对大的校验异常返回统一的错误码，但是不够灵活并且依旧没有解决参数异常提示的问题。
 
 Graceful Response从3.0版本开始，引入`@ValidationStatusCode`注解，可以非常方便地支持validation校验异常。
 
@@ -296,7 +296,7 @@ public class UserInfoQuery {
 ``
 http://localhost:9090/example/validateDto
 ``
->注意：@ValidationStatusCode校验参数对象字段的情况，code取值顺序为：会先取字段上的注解，再去该对象类（即UserInfoQuery类）上的注解，再取全局配置的参数异常码`gr.defaultValidateErrorCode`，最后取默认的全局默认的错误码（默认code=1）
+>注意：@ValidationStatusCode校验参数对象字段的情况，code取值顺序为：会先取字段上的注解，再去该属性所在对象的类（即UserInfoQuery类）上的注解，再取全局配置的参数异常码`gr.defaultValidateErrorCode`，最后取默认的全局默认的错误码（默认code=1）
 
 - 直接在Controller中校验方法入参
 
