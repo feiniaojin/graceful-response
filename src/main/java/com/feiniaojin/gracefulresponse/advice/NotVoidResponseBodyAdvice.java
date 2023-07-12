@@ -1,5 +1,6 @@
 package com.feiniaojin.gracefulresponse.advice;
 
+import com.feiniaojin.gracefulresponse.api.NotUseGracefulResponse;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
 import org.springframework.core.MethodParameter;
@@ -51,12 +52,16 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                                   Class<? extends HttpMessageConverter<?>> clazz,
                                   ServerHttpRequest serverHttpRequest,
                                   ServerHttpResponse serverHttpResponse) {
-        if (body == null) {
-            return responseFactory.newSuccessInstance();
-        } else if (body instanceof Response) {
-            return body;
-        } else {
-            return responseFactory.newSuccessInstance(body);
+        // 如果添加了不需要包装的注解, 则不判断
+        if (Boolean.FALSE.equals(methodParameter.getMethod().isAnnotationPresent(NotUseGracefulResponse.class))) {
+            if (body == null) {
+                return responseFactory.newSuccessInstance();
+            } else if (body instanceof Response) {
+                return body;
+            } else {
+                return responseFactory.newSuccessInstance(body);
+            }
         }
+        return body;
     }
 }
