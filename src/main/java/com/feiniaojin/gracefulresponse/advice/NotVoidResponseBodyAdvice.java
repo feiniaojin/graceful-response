@@ -1,7 +1,7 @@
 package com.feiniaojin.gracefulresponse.advice;
 
-import com.feiniaojin.gracefulresponse.EnableGracefulResponse;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
 import org.springframework.core.MethodParameter;
@@ -58,11 +58,11 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             // 判断请求的路径是否在过滤中体现
             if (CollectionUtils.isEmpty(properties.getExcludeFromGracefulResponsePackage())) {
                 // 判断头上是否携带注解, 如果不带
-                return Boolean.FALSE.equals(methodParameter.getMethod().isAnnotationPresent(EnableGracefulResponse.class));
+                return Boolean.FALSE.equals(methodParameter.getMethod().isAnnotationPresent(ExcludeFromGracefulResponse.class));
             } else {
                 if (properties.getExcludeFromGracefulResponsePackage().stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, className))) {
                     // 判断头上是否携带注解, 如果不带
-                    return Boolean.FALSE.equals(methodParameter.getMethod().isAnnotationPresent(EnableGracefulResponse.class));
+                    return Boolean.FALSE.equals(methodParameter.getMethod().isAnnotationPresent(ExcludeFromGracefulResponse.class));
                 }
             }
         }
