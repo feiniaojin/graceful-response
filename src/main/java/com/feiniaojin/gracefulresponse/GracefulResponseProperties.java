@@ -3,6 +3,8 @@ package com.feiniaojin.gracefulresponse;
 import com.feiniaojin.gracefulresponse.defaults.DefaultConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+
 /**
  * 核心配置类.
  *
@@ -53,6 +55,11 @@ public class GracefulResponseProperties {
      * Validate异常码，不提供的话默认DefaultConstants.DEFAULT_ERROR_CODE
      */
     private String defaultValidateErrorCode = DefaultConstants.DEFAULT_ERROR_CODE;
+
+    /**
+     * 需要过滤的包集合
+     */
+    private List<String> excludeFromGracefulResponsePackage;
 
     public boolean isUseValidationMsg() {
         return useValidationMsg;
@@ -124,5 +131,13 @@ public class GracefulResponseProperties {
 
     public void setDefaultValidateErrorCode(String defaultValidateErrorCode) {
         this.defaultValidateErrorCode = defaultValidateErrorCode;
+    }
+
+    public List<String> getExcludeFromGracefulResponsePackage() {
+        return excludeFromGracefulResponsePackage;
+    }
+
+    public void setExcludeFromGracefulResponsePackage(List<String> excludeFromGracefulResponsePackage) {
+        this.excludeFromGracefulResponsePackage = excludeFromGracefulResponsePackage;
     }
 }
