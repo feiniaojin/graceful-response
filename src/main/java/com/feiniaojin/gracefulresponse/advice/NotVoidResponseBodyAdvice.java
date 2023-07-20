@@ -54,19 +54,20 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                             Class<? extends HttpMessageConverter<?>> clazz) {
         Method method = methodParameter.getMethod();
         if (Boolean.TRUE.equals(Objects.nonNull(method))
+                // 如果类型不为void
                 && Boolean.FALSE.equals(method.getReturnType().equals(Void.TYPE))
-                && Boolean.TRUE.equals(MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz))) {
+                // 如果可以被JSON
+                && Boolean.TRUE.equals(MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz))
+                // 如果扫描包不为空
+                && Boolean.FALSE.equals(CollectionUtils.isEmpty(properties.getScanPackages()))) {
+            List<String> scanPackages = properties.getScanPackages();
             // 获取请求的路径名称
             String packageAndClassName = method.getDeclaringClass().getName();
             // 切割类名
-            String className = packageAndClassName.substring(0, packageAndClassName.lastIndexOf("."));
-            // 如果扫描路径不可为空
-            List<String> scanPackages = properties.getScanPackages();
-            if (!CollectionUtils.isEmpty(scanPackages)) {
-                // 如果请求的接口在扫描的包下
-                return scanPackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, className))
-                        && !method.isAnnotationPresent(ExcludeFromGracefulResponse.class);
-            }
+            String packageName = packageAndClassName.substring(0, packageAndClassName.lastIndexOf("."));
+            // 如果请求的接口在扫描的包下
+            return scanPackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, packageName))
+                    && !method.isAnnotationPresent(ExcludeFromGracefulResponse.class);
         }
         return false;
     }
