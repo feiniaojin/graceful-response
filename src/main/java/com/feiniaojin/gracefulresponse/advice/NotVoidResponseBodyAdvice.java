@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,6 +36,7 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     private ResponseFactory responseFactory;
     @Resource
     private GracefulResponseProperties properties;
+
     /**
      * 路径过滤器
      */
@@ -54,16 +56,14 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         if (Boolean.TRUE.equals(Objects.nonNull(method))
                 && Boolean.TRUE.equals(MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz))) {
             // 获取请求的路径名称
-            String className = method.getDeclaringClass().getName();
-            // 判断请求的路径是否在过滤中体现
-            if (CollectionUtils.isEmpty(properties.getExcludeFromGracefulResponsePackage())) {
-                // 判断头上是否携带注解, 如果不带
-                return Boolean.FALSE.equals(method.isAnnotationPresent(ExcludeFromGracefulResponse.class));
-            } else {
-                if (properties.getExcludeFromGracefulResponsePackage().stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, className))) {
-                    // 判断头上是否携带注解, 如果不带
-                    return Boolean.FALSE.equals(method.isAnnotationPresent(ExcludeFromGracefulResponse.class));
-                }
+            String packageAndClassName = method.getDeclaringClass().getName();
+            // 切割类名
+            String className = packageAndClassName.substring(0, packageAndClassName.lastIndexOf("."));
+            // 如果扫描路径不可为空
+            List<String> scanPackages = properties.getScanPackages();
+            if (!CollectionUtils.isEmpty(scanPackages)) {
+                // 如果请求的接口在扫描的包下
+                return scanPackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, className)) && !method.isAnnotationPresent(ExcludeFromGracefulResponse.class);
             }
         }
         return false;
