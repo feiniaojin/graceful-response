@@ -595,6 +595,10 @@ gr.responseClassFullName=com.feiniaojin.gracefuresponse.example.config.CustomRes
 
   全局的参数校验错误码，默认等于gr.defaultErrorCode
 
+# 6. 点赞趋势图
+
+[![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
+
 ---
 
 使用过程中如遇到问题，可以联系作者。

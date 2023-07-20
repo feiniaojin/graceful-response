@@ -57,9 +57,9 @@ public class GracefulResponseProperties {
     private String defaultValidateErrorCode = DefaultConstants.DEFAULT_ERROR_CODE;
 
     /**
-     * 需要过滤的包集合
+     * 扫描路径
      */
-    private List<String> excludeFromGracefulResponsePackage;
+    private List<String> scanPackages;
 
     public boolean isUseValidationMsg() {
         return useValidationMsg;
@@ -133,11 +133,11 @@ public class GracefulResponseProperties {
         this.defaultValidateErrorCode = defaultValidateErrorCode;
     }
 
-    public List<String> getExcludeFromGracefulResponsePackage() {
-        return excludeFromGracefulResponsePackage;
+    public List<String> getScanPackages() {
+        return scanPackages;
     }
 
-    public void setExcludeFromGracefulResponsePackage(List<String> excludeFromGracefulResponsePackage) {
-        this.excludeFromGracefulResponsePackage = excludeFromGracefulResponsePackage;
+    public void setScanPackages(List<String> scanPackages) {
+        this.scanPackages = scanPackages;
     }
 }
