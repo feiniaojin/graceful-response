@@ -54,6 +54,7 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                             Class<? extends HttpMessageConverter<?>> clazz) {
         Method method = methodParameter.getMethod();
         if (Boolean.TRUE.equals(Objects.nonNull(method))
+                && Boolean.FALSE.equals(method.getReturnType().equals(Void.TYPE))
                 && Boolean.TRUE.equals(MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz))) {
             // 获取请求的路径名称
             String packageAndClassName = method.getDeclaringClass().getName();
@@ -63,7 +64,8 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             List<String> scanPackages = properties.getScanPackages();
             if (!CollectionUtils.isEmpty(scanPackages)) {
                 // 如果请求的接口在扫描的包下
-                return scanPackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, className)) && !method.isAnnotationPresent(ExcludeFromGracefulResponse.class);
+                return scanPackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, className))
+                        && !method.isAnnotationPresent(ExcludeFromGracefulResponse.class);
             }
         }
         return false;
