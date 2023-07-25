@@ -630,8 +630,6 @@ gr:
   <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
 </a>
 
-Made with [contrib.rocks](https://contrib.rocks).
-
 ------
 
 使用过程中如遇到问题，可以联系作者。
