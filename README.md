@@ -20,10 +20,10 @@ Graceful Response是一个Spring Boot体系下的优雅响应处理器，提供�
 
 ```java
 public class Controller {
+    
     @GetMapping("/query")
     @ResponseBody
     public Response query(Parameter params) {
-
         Response res = new Response();
         try {
             //1.校验params参数，非空校验、长度校验
@@ -91,19 +91,17 @@ Data data=service.query(params);
 **graceful-response**已发布至maven中央仓库，可以直接引入到项目中，maven依赖如下：
 
 ```xml
-
 <dependency>
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>3.0</version>
+    <version>3.1.0</version>
 </dependency>
 ```
-目前最新版本为`3.0`。
+目前最新版本为`3.1.0`。
 
 ## 3.2 在启动类中引入@EnableGracefulResponse注解
 
 ```java
-
 @EnableGracefulResponse
 @SpringBootApplication
 public class ExampleApplication {
@@ -113,12 +111,21 @@ public class ExampleApplication {
 }
 ```
 
-## 3.3 Controller方法直接返回结果
+## 3.3 配置对应的扫描包
+
+ps:  支持*和**扫描
+
+```yaml
+gr:
+  scan-packages:
+    - com.lizhiadmin.pro.module.*.controller
+```
+
+## 3.4 Controller方法直接返回结果
 
 - 普通的查询
 
 ```java
-
 @Controller
 public class Controller {
     @RequestMapping("/get")
@@ -174,7 +181,7 @@ public class Controller {
 }
 ```
 
-## 3.4 Service方法业务处理
+## 3.5 Service方法业务处理
 
 在引入Graceful Response后，Service将：
 
@@ -230,7 +237,7 @@ public class NotFoundException extends RuntimeException {
 
 > 验证：启动example工程后，请求http://localhost:9090/example/notfound
 
-## 3.5 通用异常类和通用工具类
+## 3.6 通用异常类和通用工具类
 
 `@ExceptionMapper`设计的初衷，是将异常与错误码关联起来，用户只需要抛异常，不需要再关注异常与错误码的对应关系。
 
@@ -252,7 +259,6 @@ public class Service {
 public class Service {
 
     public void method() {
-        
         //当condition==true时，抛出GracefulResponseException异常，返回自定义的错误码和错误信息
         if (condition) {
             GracefulResponse.raiseException("自定义的错误码", "自定义的错误信息");
@@ -261,7 +267,7 @@ public class Service {
 }
 ```
 
-## 3.6 参数校验异常以及错误码
+## 3.7 参数校验异常以及错误码
 
 在3.0版本以前，如果validation发生了校验异常，Graceful Response在默认情况下会捕获并返回code=1，参数校验发生的异常信息会丢失；如果使用异常别名功能，可以对大的校验异常返回统一的错误码，但是不够灵活并且依旧没有解决参数异常提示的问题。
 
@@ -279,7 +285,6 @@ public class UserInfoQuery {
     @Length(min = 6, max = 12)
     @ValidationStatusCode(code = "520")
     private String userName;
-
 }
 ```
 当`userName`字段任意一项校验不通过时，接口将会返回异常码`520`和校验注解中的`message`：
@@ -309,7 +314,7 @@ public class ExampleController {
   @ResponseBody
   @ValidationStatusCode(code = "1314")
   public void validateMethodParam(@NotNull(message = "userId不能为空") Long userId,
-                                  @NotNull(message = "userName不能为空") Long userName) {
+                                  @NotNull(message = "userName不能为空") Long userName{
       //省略业务逻辑
   }
 }
@@ -340,7 +345,6 @@ http://localhost:9090/example/validateMethodParam
 创建自定义异常，采用 `@ExceptionMapper`注解修饰，注解的 `code`属性为返回码，`msg`属性为错误提示信息
 
 ```java
-
 @ExceptionMapper(code = 1007, msg = "有内鬼，终止交易")
 public static final class RatException extends RuntimeException {
 
@@ -407,7 +411,6 @@ Graceful Response可以非常轻松地解决给这类外部异常定义错误码
 - 创建异常别名，并用 `@ExceptionAliasFor`注解修饰
 
 ```java
-
 @ExceptionAliasFor(code = "1404", msg = "not found", aliasFor = NoHandlerFoundException.class)
 public class NotFoundException extends RuntimeException {
 }
@@ -424,7 +427,6 @@ aliasFor:表示将成为哪个异常的别名，通过这个属性关联到对�
 创建一个继承了AbstractExceptionAliasRegisterConfig的配置类，在实现的registerAlias方法中进行注册。
 
 ```java
-
 @Configuration
 public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig {
 
@@ -555,51 +557,82 @@ public class CustomResponseImpl implements Response {
 
 将CustomResponseImpl的全限定名配置到gr.responseClassFullName属性。
 
-```properties
-gr.responseClassFullName=com.feiniaojin.gracefuresponse.example.config.CustomResponseImpl
+```yaml
+gr:
+  response-class-full-name: com.feiniaojin.gracefuresponse.example.config.CustomResponseImpl
 ```
 
 注意，配置gr.responseClassFullName后，gr.responseStyle将不再生效。
 
+## 4.4 通过@ExcludeFromGracefulResponse过滤不需要包装的接口
+
+```java
+/**
+ * @author lihao3
+ * @date 2023/6/30 10:10
+ */
+@Api("用户相关接口")
+@Slf4j
+@RestController
+@RequestMapping("system/user")
+@RequiredArgsConstructor
+public class SysUserController {
+
+  private final SysUserService service;
+
+  @ApiOperation("删除")
+  @DeleteMapping("{id}")
+  @ExcludeFromGracefulResponse
+  public String delete(@PathVariable Long id) {
+    service.delete(id);
+    return "删除成功";
+  }
+
+}
+```
+
+这样配置就会直接返回"删除成功";
+
 # 5. 常用配置
 
-- gr.printExceptionInGlobalAdvice
-
-  是否打印异常日志，默认为false
-
-- gr.responseClassFullName
-
-  自定义Response类的全限定名，默认为空。 配置gr.responseClassFullName后，gr.responseStyle将不再生效
-
-- gr.responseStyle
-
-  Response风格，不配置默认为0
-
-- gr.defaultSuccessCode
-
-  自定义的成功响应码，不配置则为0
-
-- gr.defaultSuccessMsg
-
-  自定义的成功提示，默认为ok
-
-- gr.defaultErrorCode
-
-  自定义的失败响应码，默认为1
-
-- gr.defaultErrorMsg
-
-  自定义的失败提示，默认为error
-
-- gr.defaultValidateErrorCode
-
-  全局的参数校验错误码，默认等于gr.defaultErrorCode
+```yaml
+gr:
+  # 自定义Response类的全限定名，默认为空。 配置gr.responseClassFullName后，gr.responseStyle将不再生效
+  response-class-full-name:
+  # 是否打印异常日志，默认为false
+  print-exception-in-global-advice: 
+  # Response风格，不配置默认为0
+  response-style: 
+  # 自定义的成功响应码，不配置则为0
+  default-success-code: 
+  # 自定义的成功提示，默认为ok
+  default-success-msg: 
+  # 自定义的失败响应码，默认为1
+  default-error-code: 
+  # 自定义的失败提示，默认为error
+  default-error-msg: 
+  # 全局的参数校验错误码，默认等于gr.defaultErrorCode
+  default-validate-error-code: 
+  # 扫描包(支持数字, *和**通配符匹配)
+  scan-packages:
+    - com.lizhiadmin.pro.module.*.controller
+```
 
 # 6. 点赞趋势图
 
 [![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
 
----
+
+
+# 7. 贡献者
+
+<a href="https://github.com/feiniaojin/graceful-response/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
+
+------
 
 使用过程中如遇到问题，可以联系作者。
 
