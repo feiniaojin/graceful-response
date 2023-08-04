@@ -351,7 +351,7 @@ public static final class RatException extends RuntimeException {
 }
 ```
 
-Service执行具体逻辑，需要抛异常的时候直接抛出去即可，不需要在关心异常与错误码关联的问题
+Service执行具体逻辑，需要抛异常的时候直接抛出去即可，不需要再关心异常与错误码关联的问题
 
 ```java
 public class Service {
@@ -374,7 +374,7 @@ public class Controller {
     @RequestMapping("/test3")
     public void test3() {
         logger.info("test3: RuntimeException");
-        //Controller中不会进行异常处理，也不会手工set错误码，只关心核心操作，其他的统统交给Graceful Response
+        //Controller中不会进行异常处理，也不会手工set错误码，只关心核心操作，其他的通通交给Graceful Response
         exampleService.illegalTransaction();
     }
 }
