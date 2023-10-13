@@ -14,6 +14,12 @@ Graceful Response是一个Spring Boot体系下的优雅响应处理器，提供�
 
 本项目案例工程代码：https://github.com/feiniaojin/graceful-response-example.git ，注意选择最新版本的分支。
 
+| Spring Boot版本 | Graceful Response版本 | graceful-response-example分支        |
+|---------------|---------------------|-------------|
+| 2.x           | 3.2.0-boot2         | 3.2.0-boot2 |
+| 3.x           | 3.2.0-boot3         | 3.2.0-boot3 |
+
+
 # 2. Java Web API接口数据返回的现状及解决方案
 
 通常我们进行Java Web API接口时，大部分的Controller代码是这样的：
@@ -94,10 +100,17 @@ Data data=service.query(params);
 <dependency>
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>3.1.0</version>
+    <version>{latest.version}</version>
 </dependency>
 ```
-目前最新版本为`3.1.0`。
+目前Graceful Response分别对spring boot 2.7版本和3.0以上版本做了适配，其中：
+
+spring boot 2.7版本应使用`3.2.0-boot2`版本，spring boot 3.0版本以上，应使用`3.2.0-boot3`版本。
+
+| Spring Boot版本| Java版本 | Graceful Response版本 | graceful-response-example分支        |
+|---------------|--------|---------------------|-------------|
+| 2.x           | 8      | 3.2.0-boot2         | 3.2.0-boot2         |
+| 3.x           | 17     | 3.2.0-boot3         | 3.2.0-boot3         |
 
 ## 3.2 在启动类中引入@EnableGracefulResponse注解
 
@@ -111,17 +124,7 @@ public class ExampleApplication {
 }
 ```
 
-## 3.3 配置对应的扫描包
-
-ps:  支持*和**扫描
-
-```yaml
-gr:
-  scan-packages:
-    - com.lizhiadmin.pro.module.*.controller
-```
-
-## 3.4 Controller方法直接返回结果
+## 3.3 Controller方法直接返回结果
 
 - 普通的查询
 
@@ -181,7 +184,7 @@ public class Controller {
 }
 ```
 
-## 3.5 Service方法业务处理
+## 3.4 Service方法业务处理
 
 在引入Graceful Response后，Service将：
 
@@ -237,7 +240,7 @@ public class NotFoundException extends RuntimeException {
 
 > 验证：启动example工程后，请求http://localhost:9090/example/notfound
 
-## 3.6 通用异常类和通用工具类
+## 3.5 通用异常类和通用工具类
 
 `@ExceptionMapper`设计的初衷，是将异常与错误码关联起来，用户只需要抛异常，不需要再关注异常与错误码的对应关系。
 
@@ -267,7 +270,7 @@ public class Service {
 }
 ```
 
-## 3.7 参数校验异常以及错误码
+## 3.6 参数校验异常以及错误码
 
 在3.0版本以前，如果validation发生了校验异常，Graceful Response在默认情况下会捕获并返回code=1，参数校验发生的异常信息会丢失；如果使用异常别名功能，可以对大的校验异常返回统一的错误码，但是不够灵活并且依旧没有解决参数异常提示的问题。
 
@@ -452,9 +455,9 @@ public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig
 
 ## 4.3 自定义Response格式
 
-Graceful Response内置了两种风格的响应格式，并通过`gr.responseStyle`进行配置
+Graceful Response内置了两种风格的响应格式，并通过`graceful-response.response-style`进行配置
 
-- gr.responseStyle=0，或者不配置（默认情况）
+- graceful-response.response-style=0，或者不配置（默认情况）
 
 将以以下的格式进行返回：
 
@@ -469,7 +472,7 @@ Graceful Response内置了两种风格的响应格式，并通过`gr.responseSty
 }
 ```
 
-- gr.responseStyle=1
+- graceful-response.response-style=1
 
 将以以下的格式进行返回：
 
@@ -553,18 +556,26 @@ public class CustomResponseImpl implements Response {
 
 > 注意，不需要返回的属性可以返回null或者加上@JsonIgnore注解
 
-- 配置`gr.responseClassFullName`
+- 配置`graceful-response.response-class-full-name`
 
-将CustomResponseImpl的全限定名配置到gr.responseClassFullName属性。
+将CustomResponseImpl的全限定名配置到`graceful-response.response-class-full-name`属性。
 
 ```yaml
-gr:
+graceful-response:
   response-class-full-name: com.feiniaojin.gracefuresponse.example.config.CustomResponseImpl
 ```
 
-注意，配置gr.responseClassFullName后，gr.responseStyle将不再生效。
+注意，graceful-response.response-class-full-name后，graceful-response.responseStyle将不再生效。
 
-## 4.4 通过@ExcludeFromGracefulResponse过滤不需要包装的接口
+## 4.4 例外处理
+
+有用户反馈引入Graceful Response后，所有的controller方法均被处理了，他们希望能配置一些例外的情况。
+
+Graceful Response从 3.2.0版本开始，提供了两种方式实现controller方法例外排除。
+
+### 4.4.1 单个方法例外排除
+
+针对某个Controller方法，我们可以添加@ExcludeFromGracefulResponse注解，声明该方法不需要进行统一的包装。
 
 ```java
 /**
@@ -591,13 +602,31 @@ public class SysUserController {
 }
 ```
 
-这样配置就会直接返回"删除成功";
+这样配置就会直接返回"删除成功"，不再进行统一返回值的封装。
+
+### 4.4.2 包级别的例外处理
+
+用户可以通过配置`graceful-response.exclude-packages`，声明某些包需要跳过不进行处理。
+
+该配置项支持*和**，例如
+
+```yaml
+graceful-response:
+  exclude-packages:
+    - com.lizhiadmin.pro.module.*
+```
+该配置表明com.lizhiadmin.pro.module包下的所有controller均不会被Graceful Response进行自动处理。
+
+详细案例见example工程的`ExcludeController`类，该类下的test方法由于在application.yaml文件中配置了`graceful-response.exclude-packages`，因此Graceful Response将不会对其进行统一结果封装。
+```
+https://github.com/feiniaojin/graceful-response-example/blob/3.2.0-boot2/src/main/java/com/feiniaojin/gracefuresponse/example/controller/exclude/ExcludeController.java
+```
 
 # 5. 常用配置
 
 ```yaml
-gr:
-  # 自定义Response类的全限定名，默认为空。 配置gr.responseClassFullName后，gr.responseStyle将不再生效
+graceful-response:
+  # 自定义Response类的全限定名，默认为空。 配置response-class-full-name后，response-style将不再生效
   response-class-full-name:
   # 是否打印异常日志，默认为false
   print-exception-in-global-advice: 
@@ -611,10 +640,10 @@ gr:
   default-error-code: 
   # 自定义的失败提示，默认为error
   default-error-msg: 
-  # 全局的参数校验错误码，默认等于gr.defaultErrorCode
+  # 全局的参数校验错误码，默认等于default-error-code
   default-validate-error-code: 
-  # 扫描包(支持数字, *和**通配符匹配)
-  scan-packages:
+  # 例外包路径(支持数字, *和**通配符匹配)，该包路径下的controller将被忽略处理
+  exclude-packages:
     - com.lizhiadmin.pro.module.*.controller
 ```
 
@@ -635,3 +664,7 @@ gr:
 使用过程中如遇到问题，可以联系作者。
 
 公众号: MarkWord
+
+用户群：
+
+[![piplkxx.jpg](https://z1.ax1x.com/2023/10/13/piplkxx.jpg)](https://imgse.com/i/piplkxx)
