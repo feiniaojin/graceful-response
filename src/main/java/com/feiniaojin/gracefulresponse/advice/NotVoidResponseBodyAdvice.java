@@ -4,6 +4,8 @@ import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -32,6 +34,8 @@ import java.util.Objects;
 @Order(value = 1000)
 public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
+    private final Logger logger = LoggerFactory.getLogger(NotVoidResponseBodyAdvice.class);
+
     @Resource
     private ResponseFactory responseFactory;
     @Resource
@@ -53,23 +57,37 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     public boolean supports(MethodParameter methodParameter,
                             Class<? extends HttpMessageConverter<?>> clazz) {
         Method method = methodParameter.getMethod();
-        if (Boolean.TRUE.equals(Objects.nonNull(method))
-                // 如果类型不为void
-                && Boolean.FALSE.equals(method.getReturnType().equals(Void.TYPE))
-                // 如果可以被JSON
-                && Boolean.TRUE.equals(MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz))
-                // 如果扫描包不为空
-                && Boolean.FALSE.equals(CollectionUtils.isEmpty(properties.getScanPackages()))) {
-            List<String> scanPackages = properties.getScanPackages();
+
+        //method为空、返回值为void、非JSON，直接跳过
+        if (Objects.isNull(method)
+                || method.getReturnType().equals(Void.TYPE)
+                || !MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz)) {
+            logger.debug("Graceful Response:method为空、返回值为void、非JSON，直接跳过");
+            return false;
+        }
+
+        //有ExcludeFromGracefulResponse注解修饰的，也跳过
+        if (method.isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Graceful Response:methodName={}被@ExcludeFromGracefulResponse注解修饰，跳过", method.getName());
+            }
+            return false;
+        }
+
+        //配置了例外包路径，则该路径下的controller都不再处理
+        List<String> excludePackages = properties.getExcludePackages();
+        if (!CollectionUtils.isEmpty(excludePackages)) {
             // 获取请求的路径名称
             String packageAndClassName = method.getDeclaringClass().getName();
             // 切割类名
             String packageName = packageAndClassName.substring(0, packageAndClassName.lastIndexOf("."));
-            // 如果请求的接口在扫描的包下
-            return scanPackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, packageName))
-                    && !method.isAnnotationPresent(ExcludeFromGracefulResponse.class);
+            if (excludePackages.stream().anyMatch(item -> ANT_PATH_MATCHER.match(item, packageName))) {
+                logger.debug("Graceful Response:packageName={},匹配到excludePackages例外配置，跳过处理", packageName);
+                return false;
+            }
         }
-        return false;
+        logger.debug("Graceful Response:非空返回值，需要进行封装");
+        return true;
     }
 
     @Override

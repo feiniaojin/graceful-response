@@ -24,7 +24,7 @@ import java.util.Objects;
 @ControllerAdvice
 @Order(value = 1000)
 public class VoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
-    
+
     @Resource
     private ResponseFactory responseFactory;
 

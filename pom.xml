@@ -6,7 +6,7 @@
 
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>3.1.0</version>
+    <version>3.2.0-boot2</version>
     <name>Graceful Response</name>
     <description>Help Spring Boot web project responses gracefully!</description>
     <url>https://github.com/feiniaojin/graceful-response.git</url>
@@ -38,7 +38,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring.boot.version>2.7.8</spring.boot.version>
+        <spring.boot.version>2.7.16</spring.boot.version>
         <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
