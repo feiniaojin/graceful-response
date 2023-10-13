@@ -6,11 +6,11 @@ import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.Objects;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 public class DefaultResponseFactory implements ResponseFactory {
 
-    private Logger logger = LoggerFactory.getLogger(DefaultResponseFactory.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultResponseFactory.class);
 
     private static final Integer RESPONSE_STYLE_0 = 0;
 
@@ -40,7 +40,7 @@ public class DefaultResponseFactory implements ResponseFactory {
 
             //配置了Response的全限定名，即自定义了Response，用配置的进行返回
             if (StringUtils.hasLength(responseClassFullName)) {
-                Object newInstance = Class.forName(responseClassFullName).newInstance();
+                Object newInstance = Class.forName(responseClassFullName).getConstructor().newInstance();
                 return (Response) newInstance;
             } else {
                 //没有配Response的全限定名，则创建DefaultResponse

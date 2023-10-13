@@ -1,6 +1,7 @@
 package com.feiniaojin.gracefulresponse.advice;
 
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
+import jakarta.annotation.Resource;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -11,7 +12,6 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import javax.annotation.Resource;
 import java.util.Objects;
 
 /**

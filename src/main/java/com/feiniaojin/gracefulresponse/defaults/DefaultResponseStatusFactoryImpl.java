@@ -4,8 +4,7 @@ package com.feiniaojin.gracefulresponse.defaults;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 提供的默认的ResponseMetaFactory实现.
