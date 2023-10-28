@@ -2,7 +2,13 @@ package com.feiniaojin.gracefulresponse;
 
 public class GracefulResponseException extends RuntimeException {
 
+    /**
+     * 响应码
+     */
     private String code;
+    /**
+     * 提示信息
+     */
     private String msg;
 
     public GracefulResponseException() {
