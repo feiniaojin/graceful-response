@@ -622,6 +622,10 @@ graceful-response:
 https://github.com/feiniaojin/graceful-response-example/blob/3.2.0-boot2/src/main/java/com/feiniaojin/gracefuresponse/example/controller/exclude/ExcludeController.java
 ```
 
+## 4.5 与Swagger等API文档工具整合
+
+详细见[issue #26](https://github.com/feiniaojin/graceful-response/issues/26)
+
 # 5. 常用配置
 
 ```yaml
