@@ -9,6 +9,7 @@ import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 
 /**
  * 全局异常处理.
@@ -45,6 +45,9 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
     @Resource
     private GracefulResponseProperties gracefulResponseProperties;
 
+    @Resource
+    private GracefulResponseProperties properties;
+
     /**
      * 异常处理逻辑.
      *
@@ -55,7 +58,7 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
     @ResponseBody
     public Response exceptionHandler(Throwable throwable) {
         if (gracefulResponseProperties.isPrintExceptionInGlobalAdvice()) {
-            logger.error("GlobalExceptionAdvice捕获到异常", throwable);
+            logger.error("Graceful Response:GlobalExceptionAdvice捕获到异常,message=[{}]", throwable.getMessage(), throwable);
         }
         ResponseStatus statusLine;
         if (throwable instanceof GracefulResponseException) {
@@ -64,7 +67,6 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
             //校验异常转自定义异常
             statusLine = fromExceptionClass(throwable.getClass());
         }
-
         return responseFactory.newInstance(statusLine);
     }
 
