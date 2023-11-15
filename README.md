@@ -19,7 +19,8 @@ Graceful Response是一个Spring Boot体系下的优雅响应处理器，提供�
 | 2.x           | 3.2.0-boot2         | 3.2.0-boot2 |
 | 3.x           | 3.2.0-boot3         | 3.2.0-boot3 |
 
->注意，3.2.0-boot2版本的Graceful Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2 ，3.2.0-boot2和3.2.0-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful Response的version即可，两者的groupId、artifactId是一致的。
+>注意，3.2.0-boot2版本的Graceful Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2 ，
+>3.2.0-boot2和3.2.0-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful Response的version即可，两者的groupId、artifactId是一致的。
 
 # 2. Java Web API接口数据返回的现状及解决方案
 
@@ -623,11 +624,15 @@ graceful-response:
 https://github.com/feiniaojin/graceful-response-example/blob/3.2.0-boot2/src/main/java/com/feiniaojin/gracefuresponse/example/controller/exclude/ExcludeController.java
 ```
 
+## 4.5 与Swagger等API文档工具整合
+
+详细见[issue #26](https://github.com/feiniaojin/graceful-response/issues/26)
+
 # 5. 常用配置
 
 ```yaml
 graceful-response:
-  # 自定义Response类的全限定名，默认为空。 配置gr.response-class-full-name后，gr.response-style将不再生效
+  # 自定义Response类的全限定名，默认为空。 配置response-class-full-name后，response-style将不再生效
   response-class-full-name:
   # 是否打印异常日志，默认为false
   print-exception-in-global-advice: 
@@ -641,7 +646,7 @@ graceful-response:
   default-error-code: 
   # 自定义的失败提示，默认为error
   default-error-msg: 
-  # 全局的参数校验错误码，默认等于gr.default-error-code
+  # 全局的参数校验错误码，默认等于default-error-code
   default-validate-error-code: 
   # 例外包路径(支持数字, *和**通配符匹配)，该包路径下的controller将被忽略处理
   exclude-packages:
