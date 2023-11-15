@@ -65,4 +65,9 @@ public class AutoConfig {
     public ExceptionAliasRegister exceptionAliasRegister() {
         return new ExceptionAliasRegister();
     }
+
+    @Bean
+    public Init init(){
+        return new Init();
+    }
 }

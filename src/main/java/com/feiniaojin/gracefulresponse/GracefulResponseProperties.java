@@ -12,12 +12,13 @@ import java.util.List;
  * @version 0.1
  * @since 0.1
  */
-@ConfigurationProperties(prefix = "gr")
+@ConfigurationProperties(prefix = "graceful-response")
 public class GracefulResponseProperties {
 
-    private boolean useValidationMsg = true;
-
-    private boolean printExceptionInGlobalAdvice = true;
+    /**
+     * 在全局异常处理器中打印异常，默认不打印
+     */
+    private boolean printExceptionInGlobalAdvice = false;
 
     /**
      * 默认的Response实现类名称，配置了responseClassFullName，则responseStyle不生效
@@ -57,17 +58,9 @@ public class GracefulResponseProperties {
     private String defaultValidateErrorCode = DefaultConstants.DEFAULT_ERROR_CODE;
 
     /**
-     * 扫描路径
+     * 例外包路径
      */
-    private List<String> scanPackages;
-
-    public boolean isUseValidationMsg() {
-        return useValidationMsg;
-    }
-
-    public void setUseValidationMsg(boolean useValidationMsg) {
-        this.useValidationMsg = useValidationMsg;
-    }
+    private List<String> excludePackages;
 
     public boolean isPrintExceptionInGlobalAdvice() {
         return printExceptionInGlobalAdvice;
@@ -133,11 +126,12 @@ public class GracefulResponseProperties {
         this.defaultValidateErrorCode = defaultValidateErrorCode;
     }
 
-    public List<String> getScanPackages() {
-        return scanPackages;
+    public List<String> getExcludePackages() {
+        return excludePackages;
     }
 
-    public void setScanPackages(List<String> scanPackages) {
-        this.scanPackages = scanPackages;
+    public void setExcludePackages(List<String> excludePackages) {
+        this.excludePackages = excludePackages;
     }
+
 }

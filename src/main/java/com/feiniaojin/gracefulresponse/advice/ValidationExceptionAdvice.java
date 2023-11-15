@@ -6,6 +6,11 @@ import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.api.ValidationStatusCode;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
+import jakarta.annotation.Resource;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -21,10 +26,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.annotation.Resource;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -51,13 +52,13 @@ public class ValidationExceptionAdvice {
     @ResponseBody
     public Response exceptionHandler(Exception e) throws Exception {
 
-        if (e instanceof BindException) {
-            ResponseStatus responseStatus = this.fromBindException(e);
+        if (e instanceof MethodArgumentNotValidException) {
+            ResponseStatus responseStatus = this.fromMethodArgumentNotValidException(e);
             return responseFactory.newInstance(responseStatus);
         }
 
-        if (e instanceof MethodArgumentNotValidException) {
-            ResponseStatus responseStatus = this.fromMethodArgumentNotValidException(e);
+        if (e instanceof BindException) {
+            ResponseStatus responseStatus = this.fromBindException(e);
             return responseFactory.newInstance(responseStatus);
         }
 
@@ -72,7 +73,7 @@ public class ValidationExceptionAdvice {
     private ResponseStatus fromMethodArgumentNotValidException(Exception e) throws Exception {
         MethodArgumentNotValidException me = (MethodArgumentNotValidException) e;
         List<ObjectError> allErrors = me.getBindingResult().getAllErrors();
-        String msg = allErrors.stream().map(s -> s.getDefaultMessage()).collect(Collectors.joining(";"));
+        String msg = allErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
         String code = this.determineErrorCode();
         return responseStatusFactory.newInstance(code, msg);
     }
@@ -93,9 +94,9 @@ public class ValidationExceptionAdvice {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
         HandlerExecutionChain handlerChain = mapping.getHandler(sra.getRequest());
+        assert handlerChain != null;
         HandlerMethod handler = (HandlerMethod) handlerChain.getHandler();
-        Method method = handler.getMethod();
-        return method;
+        return handler.getMethod();
     }
 
     private ResponseStatus fromConstraintViolationException(Exception e) throws Exception {
@@ -113,8 +114,10 @@ public class ValidationExceptionAdvice {
 
         BindException bindException = (BindException) e;
         FieldError fieldError = bindException.getFieldError();
+        assert fieldError != null;
         String fieldName = fieldError.getField();
         Object target = bindException.getTarget();
+        assert target != null;
         Field declaredField = target.getClass().getDeclaredField(fieldName);
         declaredField.setAccessible(true);
         ValidationStatusCode annotation = declaredField.getAnnotation(ValidationStatusCode.class);
@@ -132,7 +135,7 @@ public class ValidationExceptionAdvice {
         }
 
         String msg = bindException.getAllErrors()
-                .stream().map(s -> s.getDefaultMessage())
+                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(";"));
 
         return responseStatusFactory.newInstance(code, msg);

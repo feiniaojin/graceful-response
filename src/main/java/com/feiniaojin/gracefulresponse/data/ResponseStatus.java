@@ -15,7 +15,6 @@ public interface ResponseStatus {
     /**
      * 获得响应码.
      *
-     * @return
      */
     String getCode();
 
