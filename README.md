@@ -666,12 +666,12 @@ graceful-response:
   <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
 </a>
 
-------
+# 8. 学习交流
 
 使用过程中如遇到问题，可以联系作者。
 
 公众号: MarkWord
 
-用户群：
+微信用户群：微信扫以下二维码添加作者微信，标注“GR”，好友申请通过后拉您进群。
 
-[![piplkxx.jpg](https://z1.ax1x.com/2023/10/13/piplkxx.jpg)](https://imgse.com/i/piplkxx)
+<div><img src="https://gingoimg.oss-cn-beijing.aliyuncs.com/ddd/qr.jpg" width="50%" height="50%" alt="pi1rmB6.jpg"/></div>
