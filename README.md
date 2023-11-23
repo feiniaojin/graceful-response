@@ -8,20 +8,23 @@
 
 # 1. 简介
 
-Graceful Response是一个Spring Boot体系下的优雅响应处理器，提供一站式统一返回值封装、全局异常处理、自定义异常错误码等功能，使用Graceful Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
+Graceful Response是一个Spring Boot技术栈下的优雅响应处理器，提供一站式统一返回值封装、全局异常处理、自定义异常错误码等功能，使用Graceful
+Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
 
 强烈推荐你花3分钟学会它！
 
 本项目案例工程代码：https://github.com/feiniaojin/graceful-response-example.git ，注意选择最新版本的分支。
 
-| Spring Boot版本 | Graceful Response版本 | graceful-response-example分支        |
-|---------------|---------------------|-------------|
-| 2.x           | 3.2.0-boot2         | 3.2.0-boot2 |
-| 3.x           | 3.2.0-boot3         | 3.2.0-boot3 |
+| Spring Boot版本 | Graceful Response版本 | graceful-response-example分支 |
+|---------------|---------------------|-----------------------------|
+| 2.x           | 3.2.0-boot2         | 3.2.0-boot2                 |
+| 3.x           | 3.2.0-boot3         | 3.2.0-boot3                 |
 
->注意，3.2.0-boot2版本的Graceful Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2 
+> 注意，3.2.0-boot2版本的Graceful
+> Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2
 
->3.2.0-boot2和3.2.0-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful Response的version即可，两者的groupId、artifactId是一致的。
+> 3.2.0-boot2和3.2.0-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful
+> Response的version即可，两者的groupId、artifactId是一致的。
 
 # 2. Java Web API接口数据返回的现状及解决方案
 
@@ -29,14 +32,14 @@ Graceful Response是一个Spring Boot体系下的优雅响应处理器，提供�
 
 ```java
 public class Controller {
-    
+
     @GetMapping("/query")
     @ResponseBody
-    public Response query(Parameter params) {
+    public Response query(Map<String, Object> paramMap) {
         Response res = new Response();
         try {
             //1.校验params参数，非空校验、长度校验
-            if (illegal(params)) {
+            if (illegal(paramMap)) {
                 res.setCode(1);
                 res.setMsg("error");
                 return res;
@@ -51,11 +54,6 @@ public class Controller {
         } catch (BizException1 e) {
             //4.异常处理：一堆丑陋的try...catch，如果有错误码的，还需要手工填充错误码
             res.setCode(1024);
-            res.setMsg("error");
-            return res;
-        } catch (BizException2 e) {
-            //4.异常处理：一堆丑陋的try...catch，如果有错误码的，还需要手工填充错误码
-            res.setCode(2048);
             res.setMsg("error");
             return res;
         } catch (Exception e) {
@@ -73,10 +71,10 @@ public class Controller {
 - 真正的业务逻辑被冗余代码淹没，真正执行业务的代码只有
 
 ```java
-Data data=service.query(params);
+Data data = service.query(params);
 ```
 
-其他代码不管是正常执行还是异常处理，都是为了异常封装、把结果封装为特定的格式，例如以下格式：
+其他代码(包括异常处理的代码），都是为了把结果封装为特定的格式。例如以下格式：
 
 ```json
 {
@@ -100,24 +98,27 @@ Data data=service.query(params);
 **graceful-response**已发布至maven中央仓库，可以直接引入到项目中，maven依赖如下：
 
 ```xml
+
 <dependency>
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
     <version>{latest.version}</version>
 </dependency>
 ```
+
 目前Graceful Response分别对spring boot 2.7版本和3.0以上版本做了适配，其中：
 
 spring boot 2.7版本应使用`3.2.0-boot2`版本，spring boot 3.0版本以上，应使用`3.2.0-boot3`版本。
 
-| Spring Boot版本| Java版本 | Graceful Response版本 | graceful-response-example分支        |
-|---------------|--------|---------------------|-------------|
-| 2.x           | 8      | 3.2.0-boot2         | 3.2.0-boot2         |
-| 3.x           | 17     | 3.2.0-boot3         | 3.2.0-boot3         |
+| Spring Boot版本 | Java版本 | Graceful Response版本 | graceful-response-example分支 |
+|---------------|--------|---------------------|-----------------------------|
+| 2.x           | 8      | 3.2.0-boot2         | 3.2.0-boot2                 |
+| 3.x           | 17     | 3.2.0-boot3         | 3.2.0-boot3                 |
 
 ## 3.2 在启动类中引入@EnableGracefulResponse注解
 
 ```java
+
 @EnableGracefulResponse
 @SpringBootApplication
 public class ExampleApplication {
@@ -132,6 +133,7 @@ public class ExampleApplication {
 - 普通的查询
 
 ```java
+
 @Controller
 public class Controller {
     @RequestMapping("/get")
@@ -247,17 +249,20 @@ public class NotFoundException extends RuntimeException {
 
 `@ExceptionMapper`设计的初衷，是将异常与错误码关联起来，用户只需要抛异常，不需要再关注异常与错误码的对应关系。
 
-部分用户反馈，希望在不自定义新异常类的情况下，也能可以按照预期返回错误码和异常信息，因此从`2.1`版本开始，新增了`GracefulResponseException`异常类，用户只需要抛出该异常即可。
+部分用户反馈，希望在不自定义新异常类的情况下，也能可以按照预期返回错误码和异常信息，因此从`2.1`
+版本开始，新增了`GracefulResponseException`异常类，用户只需要抛出该异常即可。
 
 ```java
 public class Service {
-  
-  public void method() {
-    throw new GracefulResponseException("自定义的错误码","自定义的错误信息");
-  }
+
+    public void method() {
+        throw new GracefulResponseException("自定义的错误码", "自定义的错误信息");
+    }
 }
 ```
-为简化使用，从`2.1`版本开始提供了`GracefulResponse`通用工具类，在需要抛出`GracefulResponseException`时，只需要调用`raiseException`方法即可。 这样做的目的是将用户的关注点从异常转移到错误码。
+
+为简化使用，从`2.1`版本开始提供了`GracefulResponse`通用工具类，在需要抛出`GracefulResponseException`
+时，只需要调用`raiseException`方法即可。 这样做的目的是将用户的关注点从异常转移到错误码。
 
 示例如下：
 
@@ -275,7 +280,8 @@ public class Service {
 
 ## 3.6 参数校验异常以及错误码
 
-在3.0版本以前，如果validation发生了校验异常，Graceful Response在默认情况下会捕获并返回code=1，参数校验发生的异常信息会丢失；如果使用异常别名功能，可以对大的校验异常返回统一的错误码，但是不够灵活并且依旧没有解决参数异常提示的问题。
+在3.0版本以前，如果validation发生了校验异常，Graceful
+Response在默认情况下会捕获并返回code=1，参数校验发生的异常信息会丢失；如果使用异常别名功能，可以对大的校验异常返回统一的错误码，但是不够灵活并且依旧没有解决参数异常提示的问题。
 
 Graceful Response从3.0版本开始，引入`@ValidationStatusCode`注解，可以非常方便地支持validation校验异常。
 
@@ -284,6 +290,7 @@ Graceful Response从3.0版本开始，引入`@ValidationStatusCode`注解，可�
 - 对入参类进行参数校验
 
 ```java
+
 @Data
 public class UserInfoQuery {
 
@@ -293,7 +300,9 @@ public class UserInfoQuery {
     private String userName;
 }
 ```
+
 当`userName`字段任意一项校验不通过时，接口将会返回异常码`520`和校验注解中的`message`：
+
 ```json
 {
   "status": {
@@ -303,11 +312,14 @@ public class UserInfoQuery {
   "payload": {}
 }
 ```
+
 详细见example工程ExampleController的validateDto方法
 ``
 http://localhost:9090/example/validateDto
 ``
->注意：@ValidationStatusCode校验参数对象字段的情况，code取值顺序为：会先取字段上的注解，再去该属性所在对象的类（即UserInfoQuery类）上的注解，再取全局配置的参数异常码`gr.defaultValidateErrorCode`，最后取默认的全局默认的错误码（默认code=1）
+>
+注意：@ValidationStatusCode校验参数对象字段的情况，code取值顺序为：会先取字段上的注解，再去该属性所在对象的类（即UserInfoQuery类）上的注解，再取全局配置的参数异常码`gr.defaultValidateErrorCode`
+，最后取默认的全局默认的错误码（默认code=1）
 
 - 直接在Controller中校验方法入参
 
@@ -316,16 +328,18 @@ http://localhost:9090/example/validateDto
 ```java
 public class ExampleController {
 
-  @RequestMapping("/validateMethodParam")
-  @ResponseBody
-  @ValidationStatusCode(code = "1314")
-  public void validateMethodParam(@NotNull(message = "userId不能为空") Long userId,
-                                  @NotNull(message = "userName不能为空") Long userName{
-      //省略业务逻辑
-  }
+    @RequestMapping("/validateMethodParam")
+    @ResponseBody
+    @ValidationStatusCode(code = "1314")
+    public void validateMethodParam(@NotNull(message = "userId不能为空") Long userId,
+                                    @NotNull(message = "userName不能为空") Long userName {
+        //省略业务逻辑
+    }
 }
 ```
+
 当userId、或者userName校验不通过时，将会返回code=1314，msg为对应的校验信息。
+
 ```json
 {
   "status": {
@@ -340,7 +354,9 @@ public class ExampleController {
 ``
 http://localhost:9090/example/validateMethodParam
 ``
->注意：@ValidationStatusCode校验Controller方法参数字段的情况，code取值顺序为：会先取当前方法上的注解，再去该方法所在类（即ExampleController类）上的注解，再取全局配置的参数异常码`gr.defaultValidateErrorCode`，最后取默认的全局默认的错误码（默认code=1）
+>
+注意：@ValidationStatusCode校验Controller方法参数字段的情况，code取值顺序为：会先取当前方法上的注解，再去该方法所在类（即ExampleController类）上的注解，再取全局配置的参数异常码`gr.defaultValidateErrorCode`
+，最后取默认的全局默认的错误码（默认code=1）
 
 # 4. 进阶用法
 
@@ -351,6 +367,7 @@ http://localhost:9090/example/validateMethodParam
 创建自定义异常，采用 `@ExceptionMapper`注解修饰，注解的 `code`属性为返回码，`msg`属性为错误提示信息
 
 ```java
+
 @ExceptionMapper(code = 1007, msg = "有内鬼，终止交易")
 public static final class RatException extends RuntimeException {
 
@@ -417,6 +434,7 @@ Graceful Response可以非常轻松地解决给这类外部异常定义错误码
 - 创建异常别名，并用 `@ExceptionAliasFor`注解修饰
 
 ```java
+
 @ExceptionAliasFor(code = "1404", msg = "not found", aliasFor = NoHandlerFoundException.class)
 public class NotFoundException extends RuntimeException {
 }
@@ -433,6 +451,7 @@ aliasFor:表示将成为哪个异常的别名，通过这个属性关联到对�
 创建一个继承了AbstractExceptionAliasRegisterConfig的配置类，在实现的registerAlias方法中进行注册。
 
 ```java
+
 @Configuration
 public class GracefulResponseConfig extends AbstractExceptionAliasRegisterConfig {
 
@@ -592,15 +611,15 @@ Graceful Response从 3.2.0版本开始，提供了两种方式实现controller�
 @RequiredArgsConstructor
 public class SysUserController {
 
-  private final SysUserService service;
+    private final SysUserService service;
 
-  @ApiOperation("删除")
-  @DeleteMapping("{id}")
-  @ExcludeFromGracefulResponse
-  public String delete(@PathVariable Long id) {
-    service.delete(id);
-    return "删除成功";
-  }
+    @ApiOperation("删除")
+    @DeleteMapping("{id}")
+    @ExcludeFromGracefulResponse
+    public String delete(@PathVariable Long id) {
+        service.delete(id);
+        return "删除成功";
+    }
 
 }
 ```
@@ -618,9 +637,13 @@ graceful-response:
   exclude-packages:
     - com.lizhiadmin.pro.module.*
 ```
+
 该配置表明com.lizhiadmin.pro.module包下的所有controller均不会被Graceful Response进行自动处理。
 
-详细案例见example工程的`ExcludeController`类，该类下的test方法由于在application.yaml文件中配置了`graceful-response.exclude-packages`，因此Graceful Response将不会对其进行统一结果封装。
+详细案例见example工程的`ExcludeController`
+类，该类下的test方法由于在application.yaml文件中配置了`graceful-response.exclude-packages`，因此Graceful
+Response将不会对其进行统一结果封装。
+
 ```
 https://github.com/feiniaojin/graceful-response-example/blob/3.2.0-boot2/src/main/java/com/feiniaojin/gracefuresponse/example/controller/exclude/ExcludeController.java
 ```
@@ -636,19 +659,19 @@ graceful-response:
   # 自定义Response类的全限定名，默认为空。 配置response-class-full-name后，response-style将不再生效
   response-class-full-name:
   # 是否打印异常日志，默认为false
-  print-exception-in-global-advice: 
+  print-exception-in-global-advice:
   # Response风格，不配置默认为0
-  response-style: 
+  response-style:
   # 自定义的成功响应码，不配置则为0
-  default-success-code: 
+  default-success-code:
   # 自定义的成功提示，默认为ok
-  default-success-msg: 
+  default-success-msg:
   # 自定义的失败响应码，默认为1
-  default-error-code: 
+  default-error-code:
   # 自定义的失败提示，默认为error
-  default-error-msg: 
+  default-error-msg:
   # 全局的参数校验错误码，默认等于default-error-code
-  default-validate-error-code: 
+  default-validate-error-code:
   # 例外包路径(支持数字, *和**通配符匹配)，该包路径下的controller将被忽略处理
   exclude-packages:
     - com.lizhiadmin.pro.module.*.controller
@@ -657,8 +680,6 @@ graceful-response:
 # 6. 点赞趋势图
 
 [![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
-
-
 
 # 7. 贡献者
 

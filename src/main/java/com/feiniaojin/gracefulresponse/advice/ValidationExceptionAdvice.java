@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 public class ValidationExceptionAdvice {
 
     @Resource
-    private RequestMappingHandlerMapping mapping;
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Resource
     private ResponseStatusFactory responseStatusFactory;
@@ -93,7 +93,7 @@ public class ValidationExceptionAdvice {
     private Method currentControllerMethod() throws Exception {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
-        HandlerExecutionChain handlerChain = mapping.getHandler(sra.getRequest());
+        HandlerExecutionChain handlerChain = requestMappingHandlerMapping.getHandler(sra.getRequest());
         assert handlerChain != null;
         HandlerMethod handler = (HandlerMethod) handlerChain.getHandler();
         return handler.getMethod();

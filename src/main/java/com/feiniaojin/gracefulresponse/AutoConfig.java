@@ -33,7 +33,7 @@ public class AutoConfig {
 
     @Bean
     @ConditionalOnMissingBean(value = ValidationExceptionAdvice.class)
-    public ValidationExceptionAdvice validationAdvice() {
+    public ValidationExceptionAdvice validationExceptionAdvice() {
         return new ValidationExceptionAdvice();
     }
 
