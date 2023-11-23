@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
  * 使用此注解直接返回controller属性, 不封装
  *
  * @author lihao3
- * @date 2023/7/12 9:57
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
