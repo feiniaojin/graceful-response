@@ -360,7 +360,15 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 # 3. 详细文档
 
-本项目提供的进阶功能，包括第三方组件适配（Swagger、actuator等）、自定义自定义Response、例外请求放行、异常别名、常用配置项等功能，其详细使用文档均维护在[文档中心](https://doc.feiniaojin.com)。
+本项目提供的进阶功能，包括
+
+- 第三方组件适配（Swagger、actuator等）
+- 自定义自定义Response
+- 例外请求放行
+- 异常别名
+- 常用配置项
+
+其详细使用文档均维护在[文档中心](https://doc.feiniaojin.com)。
 
 # 4. 点赞趋势图
 
