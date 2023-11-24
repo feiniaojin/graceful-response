@@ -300,7 +300,7 @@ UserInfoQuery对象中定义了@NotNull和@Length两个校验规则，在未引�
 }
 ```
 
-而对于Controller层直接校验方法入参的场景，Graceful Response也进行了增强，如以下Cntroller。
+而对于Controller层直接校验方法入参的场景，Graceful Response也进行了增强，如以下Controller。
 
 ```java
 public class Controller {
