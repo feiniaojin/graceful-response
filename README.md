@@ -362,17 +362,17 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 本项目提供的进阶功能，包括第三方组件适配（Swagger、actuator等）、自定义自定义Response、例外请求放行、异常别名、常用配置项等功能，其详细使用文档均维护在[文档中心](https://doc.feiniaojin.com)。
 
-# 3. 点赞趋势图
+# 4. 点赞趋势图
 
 [![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
 
-# 4. 贡献者
+# 5. 贡献者
 
 <a href="https://github.com/feiniaojin/graceful-response/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
 </a>
 
-# 5. 学习交流
+# 6. 学习交流
 
 使用过程中如遇到问题，可以联系作者。
 
