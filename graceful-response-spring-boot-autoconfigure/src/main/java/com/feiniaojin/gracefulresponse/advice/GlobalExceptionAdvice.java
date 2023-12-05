@@ -16,6 +16,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -61,11 +62,11 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
             logger.error("Graceful Response:GlobalExceptionAdvice捕获到异常,message=[{}]", throwable.getMessage(), throwable);
         }
         ResponseStatus statusLine;
-        if (throwable instanceof GracefulResponseException) {
-            statusLine = fromGracefulResponseExceptionInstance((GracefulResponseException) throwable);
+        if (throwable instanceof GracefulResponseException ex) {
+            statusLine = fromGracefulResponseExceptionInstance(ex);
         } else {
-            //校验异常转自定义异常
-            statusLine = fromExceptionClass(throwable.getClass());
+            // 校验异常转自定义异常
+            statusLine = fromExceptionClass(throwable);
         }
         return responseFactory.newInstance(statusLine);
     }
@@ -75,18 +76,29 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
                 exception.getMsg());
     }
 
-    private ResponseStatus fromExceptionClass(Class<? extends Throwable> clazz) {
+    private ResponseStatus fromExceptionClass(Throwable throwable) {
 
-        ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
+        ExceptionMapper exceptionMapper = throwable
+                .getClass()
+                .getAnnotation(ExceptionMapper.class);
 
         if (exceptionMapper != null) {
+
+            String message = throwable.getMessage();
+
+            // 如果自定义异常有提示信息，就返回自定义的提示信息
+            if (StringUtils.hasLength(message)) {
+                return responseStatusFactory.newInstance(exceptionMapper.code(),
+                        message);
+            }
+
             return responseStatusFactory.newInstance(exceptionMapper.code(),
                     exceptionMapper.msg());
         }
 
-        //获取已注册的别名
+        // 获取已注册的别名
         if (exceptionAliasRegister != null) {
-            ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
+            ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(throwable.getClass());
             if (exceptionAliasFor != null) {
                 return responseStatusFactory.newInstance(exceptionAliasFor.code(),
                         exceptionAliasFor.msg());

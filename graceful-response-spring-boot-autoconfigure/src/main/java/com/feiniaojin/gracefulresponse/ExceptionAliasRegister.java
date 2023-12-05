@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ExceptionAliasRegister {
 
-    private Logger logger = LoggerFactory.getLogger(ExceptionAliasRegister.class);
+    private final Logger logger = LoggerFactory.getLogger(ExceptionAliasRegister.class);
 
-    private ConcurrentHashMap<Class<? extends Throwable>, ExceptionAliasFor> aliasForMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class<? extends Throwable>, ExceptionAliasFor> aliasForMap = new ConcurrentHashMap<>();
 
     /**
      * 注册

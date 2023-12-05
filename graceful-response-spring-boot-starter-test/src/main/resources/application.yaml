@@ -1,0 +1,29 @@
+server:
+  error:
+    whitelabel:
+      enabled: true
+  servlet:
+    context-path: /api
+    encoding:
+      charset: utf-8
+      force: true
+  shutdown: graceful
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    serialization:
+      indent-output: true
+    locale: zh_CN
+    date-format: yyyy-MM-dd HH:mm:ss
+  web:
+    resources:
+      add-mappings: false
+graceful-response:
+  response-style: 1 # 响应格式
+  exclude-packages: # 排除第三方组件
+    - io.swagger.**
+    - org.springframework.boot.actuate.**
+    - org.springdoc.**
+  default-validate-error-code: 500
+  

@@ -123,7 +123,7 @@ public class ValidationExceptionAdvice {
         ValidationStatusCode annotation = declaredField.getAnnotation(ValidationStatusCode.class);
         declaredField.setAccessible(false);
 
-        //属性上找不到注解，尝试获取类上的注解
+        // 属性上找不到注解，尝试获取类上的注解
         if (annotation == null) {
             annotation = target.getClass().getAnnotation(ValidationStatusCode.class);
         }

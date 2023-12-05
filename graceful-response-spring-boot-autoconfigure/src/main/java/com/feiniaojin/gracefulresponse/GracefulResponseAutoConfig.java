@@ -9,10 +9,10 @@ import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatusFactoryImpl;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 全局返回值处理的自动配置.
@@ -21,9 +21,9 @@ import org.springframework.context.annotation.Configuration;
  * @version 0.1
  * @since 0.1
  */
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(GracefulResponseProperties.class)
-public class AutoConfig {
+public class GracefulResponseAutoConfig {
 
     @Bean
     @ConditionalOnMissingBean(value = GlobalExceptionAdvice.class)
