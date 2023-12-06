@@ -29,4 +29,12 @@ public @interface ExceptionMapper {
      * @return 异常对应的提示信息
      */
     String msg() default "Poor network quality!";
+
+    /**
+     * 异常信息是否支持替换
+     * 仅当msgReplaceable==ture，且异常实例的message不为空时才能替换
+     *
+     * @return
+     */
+    boolean msgReplaceable() default false;
 }

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 /**
  * 全局异常处理.
  *
@@ -65,26 +64,41 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
             statusLine = fromGracefulResponseExceptionInstance((GracefulResponseException) throwable);
         } else {
             //校验异常转自定义异常
-            statusLine = fromExceptionClass(throwable.getClass());
+            statusLine = fromExceptionInstance(throwable);
         }
         return responseFactory.newInstance(statusLine);
     }
 
     private ResponseStatus fromGracefulResponseExceptionInstance(GracefulResponseException exception) {
-        return responseStatusFactory.newInstance(exception.getCode(),
+        String code = exception.getCode();
+        if (code == null) {
+            code = properties.getDefaultErrorCode();
+        }
+        return responseStatusFactory.newInstance(code,
                 exception.getMsg());
     }
 
-    private ResponseStatus fromExceptionClass(Class<? extends Throwable> clazz) {
+    private ResponseStatus fromExceptionInstance(Throwable throwable) {
+
+        Class<? extends Throwable> clazz = throwable.getClass();
 
         ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
 
+        //1.有@ExceptionMapper注解，直接设置结果的状态
         if (exceptionMapper != null) {
+            boolean msgReplaceable = exceptionMapper.msgReplaceable();
+            //异常提示可替换+抛出来的异常有自定义的异常信息
+            if (msgReplaceable) {
+                String throwableMessage = throwable.getMessage();
+                if (throwableMessage != null) {
+                    return responseStatusFactory.newInstance(exceptionMapper.code(), throwableMessage);
+                }
+            }
             return responseStatusFactory.newInstance(exceptionMapper.code(),
                     exceptionMapper.msg());
         }
 
-        //获取已注册的别名
+        //2.有@ExceptionAliasFor异常别名注解，获取已注册的别名信息
         if (exceptionAliasRegister != null) {
             ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
             if (exceptionAliasFor != null) {
@@ -92,8 +106,17 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
                         exceptionAliasFor.msg());
             }
         }
+        ResponseStatus defaultError = responseStatusFactory.defaultError();
 
-        return responseStatusFactory.defaultError();
+        //3. 原生异常+originExceptionUsingDetailMessage=true
+        //如果有自定义的异常信息，原生异常将直接使用异常信息进行返回，不再返回默认错误提示
+        if (properties.getOriginExceptionUsingDetailMessage()) {
+            String throwableMessage = throwable.getMessage();
+            if (throwableMessage != null) {
+                defaultError.setMsg(throwableMessage);
+            }
+        }
+        return defaultError;
     }
 
     @Override
