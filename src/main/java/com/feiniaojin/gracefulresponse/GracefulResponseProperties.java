@@ -62,6 +62,13 @@ public class GracefulResponseProperties {
      */
     private List<String> excludePackages;
 
+    /**
+     * 不使用@ExceptionMapper和@ExceptionAliasFor修饰的原生异常
+     * 是否使用异常信息Throwable类的detailMessage进行返回
+     * originExceptionUsingDetailMessage=false，则msg=defaultErrorMsg
+     */
+    private Boolean originExceptionUsingDetailMessage = false;
+
     public boolean isPrintExceptionInGlobalAdvice() {
         return printExceptionInGlobalAdvice;
     }
@@ -134,4 +141,11 @@ public class GracefulResponseProperties {
         this.excludePackages = excludePackages;
     }
 
+    public Boolean getOriginExceptionUsingDetailMessage() {
+        return originExceptionUsingDetailMessage;
+    }
+
+    public void setOriginExceptionUsingDetailMessage(Boolean originExceptionUsingDetailMessage) {
+        this.originExceptionUsingDetailMessage = originExceptionUsingDetailMessage;
+    }
 }

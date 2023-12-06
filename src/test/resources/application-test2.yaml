@@ -1,0 +1,6 @@
+graceful-response:
+  response-style: 0
+  print-exception-in-global-advice: true
+  default-error-code: 1
+  default-error-msg: error!
+  origin-exception-using-detail-message: false

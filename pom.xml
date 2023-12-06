@@ -6,7 +6,7 @@
 
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
-    <version>3.2.1-boot3</version>
+    <version>3.3.0-boot3</version>
     <name>Graceful Response for Boot3</name>
     <description>Help Spring Boot web application responses gracefully!</description>
     <url>https://github.com/feiniaojin/graceful-response.git</url>
@@ -38,7 +38,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring.boot.version>3.1.4</spring.boot.version>
+        <spring.boot.version>3.2.0</spring.boot.version>
         <slf4j.version>2.0.9</slf4j.version>
     </properties>
 
@@ -83,6 +83,12 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>2.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -133,20 +139,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!--Compiler-->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <configuration>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <fork>true</fork>
-                            <verbose>true</verbose>
-                            <encoding>UTF-8</encoding>
-                            <showWarnings>false</showWarnings>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
             <distributionManagement>
@@ -158,4 +150,30 @@
             </distributionManagement>
         </profile>
     </profiles>
+
+    <build>
+        <plugins>
+            <!--Compiler-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <parameters>true</parameters>
+                    <source>17</source>
+                    <target>17</target>
+                    <fork>true</fork>
+                    <verbose>true</verbose>
+                    <encoding>UTF-8</encoding>
+                    <showWarnings>false</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+                <version>2.22.0</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>

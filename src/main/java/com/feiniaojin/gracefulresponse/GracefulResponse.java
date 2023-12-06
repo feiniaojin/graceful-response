@@ -1,5 +1,7 @@
 package com.feiniaojin.gracefulresponse;
 
+import com.feiniaojin.gracefulresponse.api.AssertFunction;
+
 /**
  * GracefulResponse工具类
  */
@@ -24,5 +26,21 @@ public class GracefulResponse {
      */
     public static void raiseException(String code, String msg, Throwable throwable) {
         throw new GracefulResponseException(code, msg, throwable);
+    }
+
+    public static void warpAssert(AssertFunction assertFunction) {
+        try {
+            assertFunction.doAssert();
+        } catch (Exception e) {
+            throw new GracefulResponseException(e.getMessage(), e);
+        }
+    }
+
+    public static void warpAssert(String code, AssertFunction assertFunction) {
+        try {
+            assertFunction.doAssert();
+        } catch (Exception e) {
+            throw new GracefulResponseException(code, e.getMessage(), e);
+        }
     }
 }
