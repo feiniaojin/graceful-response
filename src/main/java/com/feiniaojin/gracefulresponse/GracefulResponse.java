@@ -28,7 +28,7 @@ public class GracefulResponse {
         throw new GracefulResponseException(code, msg, throwable);
     }
 
-    public static void warpAssert(AssertFunction assertFunction) {
+    public static void wrapAssert(AssertFunction assertFunction) {
         try {
             assertFunction.doAssert();
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class GracefulResponse {
         }
     }
 
-    public static void warpAssert(String code, AssertFunction assertFunction) {
+    public static void wrapAssert(String code, AssertFunction assertFunction) {
         try {
             assertFunction.doAssert();
         } catch (Exception e) {

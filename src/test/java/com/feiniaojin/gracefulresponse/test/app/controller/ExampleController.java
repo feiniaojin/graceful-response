@@ -255,13 +255,13 @@ public class ExampleController {
     @RequestMapping("/assert1")
     @ResponseBody
     public void assert1(Integer id) {
-        GracefulResponse.warpAssert(() -> Assert.isTrue(id == 1, "id不等于1"));
+        GracefulResponse.wrapAssert(() -> Assert.isTrue(id == 1, "id不等于1"));
     }
 
     @RequestMapping("/assert2")
     @ResponseBody
     public void assert2(Integer id) {
-        GracefulResponse.warpAssert("1001", () -> Assert.isTrue(id == 1, "id不等于1"));
+        GracefulResponse.wrapAssert("1001", () -> Assert.isTrue(id == 1, "id不等于1"));
     }
 
     @RequestMapping("/customExceptionDetailMessage0")
