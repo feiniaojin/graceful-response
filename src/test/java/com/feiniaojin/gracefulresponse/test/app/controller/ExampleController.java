@@ -41,7 +41,7 @@ public class ExampleController {
 
     /**
      * 测试空返回值.
-     * http://localhost:9090/example/void
+     * http://localhost:8080/example/void
      */
     @RequestMapping("/voidResponse")
     @ResponseBody
@@ -52,7 +52,7 @@ public class ExampleController {
 
     /**
      * 测试成功返回
-     * http://localhost:9090/example/success?userId=1&userName=userName&age=20
+     * http://localhost:8080/example/success?userId=1&userName=userName&age=20
      *
      * @param dto
      * @return
@@ -69,7 +69,7 @@ public class ExampleController {
 
     /**
      * 测试成功返回
-     * http://localhost:9090/example/get?id=1
+     * http://localhost:8080/example/get?id=1
      *
      * @param id
      * @return
@@ -86,7 +86,7 @@ public class ExampleController {
 
     /**
      * 测试抛出运行时异常的处理.
-     * http://localhost:9090/example/runtime
+     * http://localhost:8080/example/runtime
      *
      * @return 直接返回，未处理
      */
@@ -102,7 +102,7 @@ public class ExampleController {
 
     /**
      * 测试受检异常的情形.
-     * http://localhost:9090/example/checked
+     * http://localhost:8080/example/checked
      *
      * @param dto 入参
      * @return 未处理，直接将入参返回
@@ -121,7 +121,7 @@ public class ExampleController {
 
     /**
      * 测试抛出{@code Throwable} 的情形.
-     * http://localhost:9090/example/throwable
+     * http://localhost:8080/example/throwable
      *
      * @param dto 入参
      * @return 未处理，直接返回
@@ -135,7 +135,7 @@ public class ExampleController {
     }
 
     /**
-     * http://localhost:9090/example/validateDto
+     * http://localhost:8080/example/validateDto
      *
      * @param dto
      */
@@ -147,7 +147,7 @@ public class ExampleController {
 
     /**
      * 测试Controller中方法对参数进行校验的情形.
-     * http://localhost:9090/example/validateMethodParam
+     * http://localhost:8080/example/validateMethodParam
      *
      * @param userId 非空
      */
@@ -162,7 +162,7 @@ public class ExampleController {
     /**
      * 不支持的http方法调用.
      * POST接口，使用GET进行请求
-     * http://localhost:9090/example/methodPost
+     * http://localhost:8080/example/methodPost
      *
      * @param userId 非空
      */
@@ -174,7 +174,7 @@ public class ExampleController {
     }
 
     /**
-     * http://localhost:9090/example/jsonStr
+     * http://localhost:8080/example/jsonStr
      * <p>
      * {"key":"value"}
      * 测试Controller中方法对参数进行校验的情形.
@@ -187,7 +187,7 @@ public class ExampleController {
     }
 
     /**
-     * http://localhost:9090/example/str
+     * http://localhost:8080/example/str
      * 直接返回String，将会匹配模版页面.
      */
     @RequestMapping("/str")
@@ -199,7 +199,7 @@ public class ExampleController {
 
     /**
      * 测试Controller中方法对参数进行校验的情形.
-     * http://localhost:9090/example/raiseException0
+     * http://localhost:8080/example/raiseException0
      */
     @RequestMapping("/raiseException0")
     public void raiseException0() {
@@ -208,7 +208,7 @@ public class ExampleController {
 
     /**
      * 测试Controller中方法对参数进行校验的情形.
-     * http://localhost:9090/example/raiseException0
+     * http://localhost:8080/example/raiseException0
      */
     @RequestMapping("/raiseException1")
     public void raiseException1() {
@@ -220,7 +220,7 @@ public class ExampleController {
     }
 
     /**
-     * http://localhost:9090/example/return/str
+     * http://localhost:8080/example/return/str
      * 直接返回String
      */
     @RequestMapping("/return/str")
@@ -230,7 +230,7 @@ public class ExampleController {
     }
 
     /**
-     * http://localhost:9090/example/validate/propertyType
+     * http://localhost:8080/example/validate/propertyType
      *
      * @param command
      */
