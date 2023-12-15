@@ -31,7 +31,7 @@ import java.util.Map;
 @RequestMapping("/example")
 @Validated
 public class ExampleController {
-    private Logger logger = LoggerFactory.getLogger(ExampleController.class);
+    private final Logger logger = LoggerFactory.getLogger(ExampleController.class);
 
     @Resource
     private ResponseFactory responseFactory;
