@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 
 public abstract class AbstractExceptionAliasRegisterConfig implements ApplicationContextAware {
 
-    private Logger logger = LoggerFactory.getLogger(AbstractExceptionAliasRegisterConfig.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractExceptionAliasRegisterConfig.class);
 
     protected abstract void registerAlias(ExceptionAliasRegister register);
 
