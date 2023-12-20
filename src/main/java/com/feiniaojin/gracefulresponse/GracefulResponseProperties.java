@@ -55,7 +55,7 @@ public class GracefulResponseProperties {
     /**
      * Validate异常码，不提供的话默认DefaultConstants.DEFAULT_ERROR_CODE
      */
-    private String defaultValidateErrorCode = DefaultConstants.DEFAULT_ERROR_CODE;
+    private String defaultValidateErrorCode;
 
     /**
      * 例外包路径

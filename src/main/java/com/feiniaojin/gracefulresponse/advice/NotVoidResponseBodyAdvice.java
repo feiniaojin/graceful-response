@@ -100,6 +100,10 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         } else if (body instanceof Response) {
             return body;
         } else {
+            if (logger.isDebugEnabled()) {
+                String path = serverHttpRequest.getURI().getPath();
+                logger.debug("Graceful Response:非空返回值，执行封装:path={}", path);
+            }
             return responseFactory.newSuccessInstance(body);
         }
     }
