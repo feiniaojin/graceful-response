@@ -4,6 +4,7 @@ import com.feiniaojin.gracefulresponse.defaults.DefaultConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 核心配置类.
@@ -68,6 +69,11 @@ public class GracefulResponseProperties {
      * originExceptionUsingDetailMessage=false，则msg=defaultErrorMsg
      */
     private Boolean originExceptionUsingDetailMessage = false;
+
+    /**
+     * 自定义需要支持的JSON转换器
+     */
+    private String jsonHttpMessageConverter;
 
     public boolean isPrintExceptionInGlobalAdvice() {
         return printExceptionInGlobalAdvice;
@@ -147,5 +153,13 @@ public class GracefulResponseProperties {
 
     public void setOriginExceptionUsingDetailMessage(Boolean originExceptionUsingDetailMessage) {
         this.originExceptionUsingDetailMessage = originExceptionUsingDetailMessage;
+    }
+
+    public String getJsonHttpMessageConverter() {
+        return jsonHttpMessageConverter;
+    }
+
+    public void setJsonHttpMessageConverter(String jsonHttpMessageConverter) {
+        this.jsonHttpMessageConverter = jsonHttpMessageConverter;
     }
 }
