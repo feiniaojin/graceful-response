@@ -62,8 +62,9 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         //method为空、返回值为void、非JSON，直接跳过
         if (Objects.isNull(method)
                 || method.getReturnType().equals(Void.TYPE)
+                || method.getReturnType().equals(Response.class)
                 || !isJsonHttpMessageConverter(clazz)) {
-            logger.debug("Graceful Response:method为空、返回值为void、非JSON，跳过");
+            logger.debug("Graceful Response:method为空、返回值为void和Response类型、非JSON，跳过");
             return false;
         }
 
