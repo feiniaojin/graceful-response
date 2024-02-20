@@ -17,8 +17,8 @@ Response进行web接口开发不仅可以节省大量的时间，还可以提高
 
 | Spring Boot版本 | Graceful Response版本 | graceful-response-example分支 |
 |---------------|---------------------|-----------------------------|
-| 2.x           | 3.4.0-boot2         | 3.4.0-boot2                 |
-| 3.x           | 3.4.0-boot3         | 3.4.0-boot3                 |
+| 2.x           | 3.5.1-boot2         | 3.5.1-boot2                 |
+| 3.x           | 3.5.1-boot3         | 3.5.1-boot3                 |
 
 > 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2
 
@@ -107,8 +107,8 @@ maven依赖如下：
 
 | Spring Boot版本 | Graceful Response最新版本 |
 |---------------|-----------------------|		
-| 2.x           | 3.4.0-boot2           |	
-| 3.x           | 3.4.0-boot3           |
+| 2.x           | 3.5.1-boot2           |	
+| 3.x           | 3.5.1-boot3           |
 
 ### 2.2.2 启用Graceful Response
 

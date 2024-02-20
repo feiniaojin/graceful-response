@@ -1,10 +1,7 @@
 package com.feiniaojin.gracefulresponse;
 
 
-import com.feiniaojin.gracefulresponse.advice.GlobalExceptionAdvice;
-import com.feiniaojin.gracefulresponse.advice.NotVoidResponseBodyAdvice;
-import com.feiniaojin.gracefulresponse.advice.ValidationExceptionAdvice;
-import com.feiniaojin.gracefulresponse.advice.VoidResponseBodyAdvice;
+import com.feiniaojin.gracefulresponse.advice.*;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
@@ -67,7 +64,12 @@ public class AutoConfig {
     }
 
     @Bean
-    public Init init(){
+    public AdviceSupport adviceSupport() {
+        return new AdviceSupport();
+    }
+
+    @Bean
+    public Init init() {
         return new Init();
     }
 }

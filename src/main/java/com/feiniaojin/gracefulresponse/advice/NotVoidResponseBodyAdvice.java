@@ -41,7 +41,8 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     private ResponseFactory responseFactory;
     @Resource
     private GracefulResponseProperties properties;
-
+    @Resource
+    private AdviceSupport adviceSupport;
     /**
      * 路径过滤器
      */
@@ -63,7 +64,7 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         if (Objects.isNull(method)
                 || method.getReturnType().equals(Void.TYPE)
                 || method.getReturnType().equals(Response.class)
-                || !isJsonHttpMessageConverter(clazz)) {
+                || !adviceSupport.isJsonHttpMessageConverter(clazz)) {
             logger.debug("Graceful Response:method为空、返回值为void和Response类型、非JSON，跳过");
             return false;
         }
@@ -88,17 +89,6 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         }
         logger.debug("Graceful Response:非空返回值，需要进行封装");
         return true;
-    }
-
-    /**
-     * 判断是否是JSON消息转换器
-     * @param clazz
-     * @return
-     */
-    private boolean isJsonHttpMessageConverter(Class<? extends HttpMessageConverter<?>> clazz) {
-        return AbstractJsonHttpMessageConverter.class.isAssignableFrom(clazz)
-                || AbstractJackson2HttpMessageConverter.class.isAssignableFrom(clazz)
-                || clazz.getName().equals(properties.getJsonHttpMessageConverter());
     }
 
     @Override

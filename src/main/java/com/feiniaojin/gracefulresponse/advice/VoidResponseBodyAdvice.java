@@ -27,6 +27,8 @@ public class VoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Resource
     private ResponseFactory responseFactory;
+    @Resource
+    private AdviceSupport adviceSupport;
 
     /**
      * 只处理返回空的Controller方法.
@@ -40,7 +42,7 @@ public class VoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                             Class<? extends HttpMessageConverter<?>> clazz) {
 
         return Objects.requireNonNull(methodParameter.getMethod()).getReturnType().equals(Void.TYPE)
-                && MappingJackson2HttpMessageConverter.class.isAssignableFrom(clazz);
+                && adviceSupport.isJsonHttpMessageConverter(clazz);
     }
 
     @Override
