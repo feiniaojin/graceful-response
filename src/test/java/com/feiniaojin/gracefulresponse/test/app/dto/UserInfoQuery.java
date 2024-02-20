@@ -17,7 +17,6 @@ public class UserInfoQuery {
 
     @NotNull(message = "userName is null !")
     @Length(min = 6, max = 12)
-    @ValidationStatusCode(code = "520")
     private String userName;
 
     @NotNull(message = "age is null !")
