@@ -22,7 +22,7 @@ Response进行web接口开发不仅可以节省大量的时间，还可以提高
 
 > 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2
 
-> 3.4.0-boot2和3.4.0-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful
+> 3.5.1-boot2和3.5.1-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful
 > Response的version即可，两者的groupId、artifactId是一致的。
 
 # 2. 快速入门
