@@ -14,9 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +57,9 @@ public class ValidationExceptionAdvice {
     @Resource
     private GracefulResponseProperties gracefulResponseProperties;
 
+    private static ExpressionParser parser = new SpelExpressionParser();
+
+
     @ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class})
     @ResponseBody
     public Response exceptionHandler(Exception e) throws Exception {
@@ -72,48 +79,54 @@ public class ValidationExceptionAdvice {
     }
 
     //Controller方法的参数校验码
-    //Controller方法>Controller类>DTO入参属性>DTO入参类>配置文件默认参数码>默认错误码
+    //Controller方法>Controller类>DTO入参属性>DTO入参属性所在类>DTO入参根类>配置文件默认参数码>默认错误码
+    //这个取值顺序的逻辑是按照个性化程度由高到底排序的
     private ResponseStatus handleBindException(BindException e) throws Exception {
-        List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
+        BindingResult bindingResult = e.getBindingResult();
+        List<ObjectError> allErrors = bindingResult.getAllErrors();
         String msg = allErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
         String code;
-        //Controller方法上的注解
+        //Controller方法和类上的注解
         ValidationStatusCode validateStatusCode = this.findValidationStatusCodeInController();
         if (validateStatusCode != null) {
             code = validateStatusCode.code();
             return responseStatusFactory.newInstance(code, msg);
         }
-        //属性校验上的注解，只会取第一个属性上的注解，因此要配置
-        //hibernate.validator.fail_fast=true
-        List<FieldError> fieldErrors = e.getFieldErrors();
-        if (!CollectionUtils.isEmpty(fieldErrors)) {
-            FieldError fieldError = fieldErrors.get(0);
-            String fieldName = fieldError.getField();
-            Object target = e.getTarget();
-            Field field = null;
-            Class<?> clazz = null;
-            Object obj = target;
-            if (fieldName.contains(".")) {
-                String[] strings = fieldName.split("\\.");
-                for (String fName : strings) {
-                    clazz = obj.getClass();
-                    field = obj.getClass().getDeclaredField(fName);
-                    field.setAccessible(true);
-                    obj = field.get(obj);
-                }
-            } else {
-                clazz = target.getClass();
-                field = target.getClass().getDeclaredField(fieldName);
-            }
 
-            ValidationStatusCode annotation = field.getAnnotation(ValidationStatusCode.class);
-            //属性上找到注解
-            if (annotation != null) {
-                code = annotation.code();
-                return responseStatusFactory.newInstance(code, msg);
-            }
-            //类上面找到注解
-            annotation = clazz.getAnnotation(ValidationStatusCode.class);
+        //DTO入参属性
+        List<FieldError> fieldErrors = e.getFieldErrors();
+        FieldError fieldError = fieldErrors.get(0);
+        String fieldName = fieldError.getField();
+        Field field = null;
+        Class<?> clazz = null;
+        Object target = bindingResult.getTarget();
+        //不包含.，说明直接是根路径
+        if (!fieldName.contains(".")) {
+            clazz = target.getClass();
+        } else {
+            String fieldParentPath = fieldParentPath(fieldName);
+            fieldName = fieldSimpleName(fieldName);
+            Expression expression = parser.parseExpression(fieldParentPath);
+            clazz = expression.getValue(target).getClass();
+        }
+        field = clazz.getDeclaredField(fieldName);
+
+        ValidationStatusCode annotation = field.getAnnotation(ValidationStatusCode.class);
+        //属性上找到注解
+        if (annotation != null) {
+            code = annotation.code();
+            return responseStatusFactory.newInstance(code, msg);
+        }
+        //属性所在类上面找到注解
+        annotation = clazz.getAnnotation(ValidationStatusCode.class);
+        if (annotation != null) {
+            code = annotation.code();
+            return responseStatusFactory.newInstance(code, msg);
+        }
+
+        //根类上找注解
+        if (target.getClass() != clazz) {
+            annotation = target.getClass().getAnnotation(ValidationStatusCode.class);
             if (annotation != null) {
                 code = annotation.code();
                 return responseStatusFactory.newInstance(code, msg);
@@ -127,6 +140,68 @@ public class ValidationExceptionAdvice {
         //默认的异常码
         code = gracefulResponseProperties.getDefaultErrorCode();
         return responseStatusFactory.newInstance(code, msg);
+    }
+
+    private String fieldSimpleName(String fieldName) {
+        int lastIndex = fieldName.lastIndexOf(".");
+        StringBuilder stringBuilder = new StringBuilder();
+        int length = fieldName.length();
+        for (int i = lastIndex + 1; i < length; i++) {
+            stringBuilder.append(fieldName.charAt(i));
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 属性父类路径
+     *
+     * @param fieldName
+     * @return
+     */
+    private String fieldParentPath(String fieldName) {
+        int lastIndex = fieldName.lastIndexOf(".");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < lastIndex; i++) {
+            stringBuilder.append(fieldName.charAt(i));
+        }
+        return stringBuilder.toString();
+    }
+
+    private String leafPropertyFieldName(String fieldName) {
+        int lastIndexOf = fieldName.lastIndexOf('.');
+        if (lastIndexOf == -1) {
+            return fieldName;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        int len = fieldName.length();
+        for (int i = lastIndexOf + 1; i < len; i++) {
+            stringBuilder.append(fieldName.charAt(i));
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 适配数组属性，包括数组、集合
+     *
+     * @param fieldName
+     * @return
+     */
+    private String adapterArrayProperty(String fieldName) {
+        //最后一个字符不是]，则不是数组属性
+        if (fieldName.lastIndexOf(']') == -1) {
+            return fieldName;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        int len = fieldName.length();
+        char c;
+        for (int i = 0; i < len; i++) {
+            c = fieldName.charAt(i);
+            if (c == '[') {
+                break;
+            }
+            stringBuilder.append(c);
+        }
+        return stringBuilder.toString();
     }
 
     /**
