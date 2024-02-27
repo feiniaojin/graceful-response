@@ -5,7 +5,6 @@ import jakarta.annotation.Resource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
-import org.springframework.stereotype.Component;
 
 /**
  * Advice的工具类
