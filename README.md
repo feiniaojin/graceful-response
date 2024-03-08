@@ -369,7 +369,7 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 其详细使用文档均维护在[文档中心](https://doc.feiniaojin.com)。
 
-# 4. 点赞趋势图
+# 4. star
 
 [![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
 
