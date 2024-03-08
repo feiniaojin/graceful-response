@@ -379,12 +379,14 @@ graceful-response.response-style=1，将以以下的格式进行返回：
   <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
 </a>
 
-# 6. 学习交流
+# 6. 联系作者并加入用户交流群
 
-使用过程中如遇到问题，可以联系作者。
-
-公众号: MarkWord
-
-微信用户群：微信扫以下二维码添加作者微信，标注“GR”，好友申请通过后拉您进群。
+欢迎通过以下二维码联系作者，并加入Graceful Response用户交流群，申请好友时请备注“GR”。
 
 <div><img src="./assets/qr.jpg" style="width: 50%"/></div>
+
+公众号: 悟道领域驱动设计
+
+<div><img src="./assets/gzh.jpg" style="width: 50%"/></div>
+
+
