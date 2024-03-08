@@ -387,4 +387,4 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 微信用户群：微信扫以下二维码添加作者微信，标注“GR”，好友申请通过后拉您进群。
 
-<div><img src="https://gingoimg.oss-cn-beijing.aliyuncs.com/ddd/qr.jpg" style="width: 50%"/></div>
+<div><img src="./assets/qr.jpg" style="width: 50%"/></div>
