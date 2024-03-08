@@ -369,7 +369,7 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 其详细使用文档均维护在[文档中心](https://doc.feiniaojin.com)。
 
-# 4. 点赞趋势图
+# 4. star
 
 [![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
 
@@ -387,4 +387,4 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 微信用户群：微信扫以下二维码添加作者微信，标注“GR”，好友申请通过后拉您进群。
 
-<div><img src="https://gingoimg.oss-cn-beijing.aliyuncs.com/ddd/qr.jpg" style="width: 50%"/></div>
+<div><img src="[https://file.feiniaojin.com/ddd/qr.jpg](https://file.feiniaojin.com/ddd/qr.jpg)" style="width: 50%"/></div>
