@@ -302,11 +302,11 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 如果这两种格式均不满足业务需要，Graceful Response也支持用户自定义Response，关于自定义响应体的技术实现，请到[文档中心](https://doc.feiniaojin.com)进行了解。
 
-# 4.相关文档
+# 4.相关链接
 
 [文档中心](https://doc.feiniaojin.com)
 
-[项目示例](https://gitee.com/igingo/graceful-response-example)
+[项目示例](https://github.com/feiniaojin/graceful-response-example)
 
 # 5.star
 
