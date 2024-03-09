@@ -6,48 +6,110 @@
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 ![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin/graceful-response)
 
-# 1. 简介
+# 1. 项目介绍
 
-Graceful Response是一个Spring Boot技术栈下的优雅响应处理器，提供一站式统一返回值封装、全局异常处理、自定义异常错误码等功能，使用Graceful
-Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
+Graceful Response是一个Spring Boot技术栈下的优雅响应处理组件，可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，提高开发效率，提高代码质量。
 
-[项目地址-github](https://github.com/feiniaojin/graceful-response)
+![代码现状](./assets/use-gr.png)
 
-[项目地址-gitee](https://gitee.com/igingo/graceful-response)
+代码仓库如下，欢迎star！
 
-## 1.1 功能点
+- Gitee
 
-1. 第三方组件适配（Swagger、actuator、JSON序列化等）
-2. 支持自定义响应体，满足不同项目的需求
-3. 自定义异常信息
-4. 断言增强并且填充异常信息到Response
-5. 例外请求放行
-6. 异常别名
-7. 常用配置项
+```text
+https://gitee.com/igingo/graceful-response
+```
+- GitHub
 
-## 1.2 解决了什么问题
+```text
+https://github.com/feiniaojin/graceful-response
+```
+国内开发者更推荐通过Gitee进行仓库访问和沟通交流。
 
-**Spring Boot接口开发现状**
+# 2. 功能列表
+- 统一返回值封装
+- void返回类型封装
+- 全局异常处理
+- 参数校验错误码
+- 自定义响应体，满足不同项目的需求
+- 断言增强并且填充错误码和异常信息到Response
+- 异常别名，适配外部异常
+- 例外请求放行
+- 第三方组件适配（Swagger、actuator、FastJson序列化等）
+
+更多功能，请到[文档中心](https://doc.feiniaojin.com/graceful-response/home.html)的项目主页进行了解。
+
+# 3. 核心应用场景
 
 目前，业界使用Spring Boot进行接口开发时，往往存在效率底下、重复劳动、可读性差等问题。以下伪代码相信大家非常熟悉，我们大部分项目的Controller接口都是这样的。
 
-![代码现状](./assets/codeStatus.png)
+```java
+@Controller
+public class Controller {
+    
+    @GetMapping("/query")
+    @ResponseBody
+    public Response query(Map<String, Object> paramMap) {
+        Response res = new Response();
+        try {
+            //1.校验params参数合法性，包括非空校验、长度校验等
+            if (illegal(paramMap)) {
+                res.setCode(1);
+                res.setMsg("error");
+                return res;
+            }
+            //2.调用Service的一系列操作，得到查询结果
+            Object data = service.query(params);
+            //3.将操作结果设置到res对象中
+            res.setData(data);
+            res.setCode(0);
+            res.setMsg("ok");
+            return res;
+        } catch (Exception e) {
+            //4.异常处理：一堆丑陋的try...catch，如果有错误码的，还需要手工填充错误码
+            res.setCode(1);
+            res.setMsg("error");
+            return res;
+        }
+    }
+}
+```
 
 主要体现在以下三个点：
 
-1. **效率低下：** Controller层的代码应该尽量简洁，上面的伪代码其实只是为了将数据查询的结果进行封装，使其以统一的格式进行返回。
-2. **重复劳动：** 以上捕获异常、封装执行结果的操作，每个接口都会进行一次，因此造成大量重复劳动
-3. **可读性低：** 上面的核心代码被淹没在许多冗余代码中，很难阅读，如同大海捞针
+**价值低下：** Controller层的代码应该尽量简洁，上面的伪代码其实只是为了将数据查询的结果进行封装，使其以统一的格式进行返回。
 
-Graceful Response这个组件解决这样的问题而诞生的，效果如下：
+**重复劳动：** 以上捕获异常、封装执行结果的操作，每个接口都会进行一次，因此造成大量重复劳动
 
-![代码现状](./assets/newCodeStatus.png)
+**可读性低：** 上面的核心代码被淹没在许多冗余代码中，很难阅读，如同大海捞针
 
+Graceful Response可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，使代码更精简更清晰，可以使开发者有更多的注意力聚焦在业务代码上。效果如下：
 
+```java
+@Controller
+public class Controller {
+    @RequestMapping("/get")
+    @ResponseBody
+    public UserInfoView get(Long id) {
+        log.info("id={}", id);
+        return UserInfoView.builder().id(id).name("name" + id).build();
+    }
+}
+```
 
-# 2.快速入门
+# 4.快速入门
 
-## 2.1 版本选择
+## 4.1 maven依赖
+
+```xml
+<dependency>
+    <groupId>com.feiniaojin</groupId>
+    <artifactId>graceful-response</artifactId>
+    <version>{latest.version}</version>
+</dependency>
+```
+
+## 4.2 版本选择
 
 **Latest Version**
 
@@ -58,17 +120,7 @@ Graceful Response这个组件解决这样的问题而诞生的，效果如下：
 
 > 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，boot2和boot3除了支持的SpringBoot版本不一样，其他实现完全一致。boot2版本地址：[graceful-response-boot2](https://github.com/feiniaojin/graceful-response-boot2)
 
-## 2.2 maven依赖
-
-```xml
-<dependency>
-    <groupId>com.feiniaojin</groupId>
-    <artifactId>graceful-response</artifactId>
-    <version>{latest.version}</version>
-</dependency>
-```
-
-## 2.3 开启Graceful Response
+## 4.3 注解开启
 
 在启动类中引入@EnableGracefulResponse注解，即可启用Graceful Response组件。
 
@@ -82,7 +134,9 @@ public class ExampleApplication {
 }
 ```
 
-## 2.4 Controller层
+## 4.4 代码编写
+
+- Controller
 
 引入Graceful Response后，我们不需要再手工进行查询结果的封装，直接返回实际结果即可，Graceful Response会自动完成封装的操作。
 
@@ -140,7 +194,7 @@ public class Controller {
 }
 ```
 
-## 2.5 Service层
+- Service层
 
 在引入Graceful Response前，有的开发者在定义Service层的方法时，为了在接口中返回异常码，干脆直接将Service层方法定义为Response，淹没了方法的正常返回值。
 
@@ -210,124 +264,43 @@ Response会进行异常捕获，并将NotFoundException对应的异常码和异�
 }
 ```
 
-## 2.6 参数校验
-
-Graceful Response对JSR-303数据校验规范和Hibernate Validator进行了增强，Graceful Response自身不提供参数校验的功能，但是用户使用了Hibernate
-Validator后，Graceful Response可以通过@ValidationStatusCode注解为参数校验结果提供响应码，并将其统一封装返回。
-
-例如以下的UserInfoQuery。
-
-```java
-
-@Data
-public class UserInfoQuery {
-    @NotNull(message = "userName is null !")
-    @Length(min = 6, max = 12)
-    @ValidationStatusCode(code = "520")
-    private String userName;
-}
+# 5.文档和示例
+## 5.1 文档中心
+```text
+https://doc.feiniaojin.com/graceful-response/home.html
+```
+[点击访问文档中心](https://doc.feiniaojin.com/graceful-response/home.html
+)
+## 5.2 代码示例
+- Gitee
+```text
+https://github.com/feiniaojin/graceful-response-example
+```
+- GitHub
+```text
+https://gitee.com/igingo/graceful-response-example
 ```
 
-UserInfoQuery对象中定义了@NotNull和@Length两个校验规则，在未引入Graceful Response的情况下，会直接抛出异常；
+# 6.交流和反馈
 
-在引入Graceful Response但是没有加入@ValidationStatusCode注解的情况下，会以默认的错误码进行返回；
-
-在上面的UserInfoQuery中由于使用了@ValidationStatusCode注解，并指定异常码为520，则当userName字段任意校验不通过时，都会使用异常码520进行返回，如下。
-
-```json
-{
-  "status": {
-    "code": "520",
-    "msg": "userName is null !"
-  },
-  "payload": {}
-}
-```
-
-而对于Controller层直接校验方法入参的场景，Graceful Response也进行了增强，如以下Controller。
-
-```java
-public class Controller {
-
-    @RequestMapping("/validateMethodParam")
-    @ResponseBody
-    @ValidationStatusCode(code = "1314")
-    public void validateMethodParam(
-            @NotNull(message = "userId不能为空") Long userId,
-            @NotNull(message = "userName不能为空") Long userName) {
-        //省略业务逻辑
-    }
-}
-```
-
-如果该方法入参校验触发了userId和userName的校验异常，将以错误码1314进行返回，如下。
-
-```json
-{
-  "status": {
-    "code": "1314",
-    "msg": "userId不能为空"
-  },
-  "payload": {}
-}
-```
-
-## 2.7 自定义Response格式
-
-Graceful Response内置了两种风格的响应格式，并通过graceful-response.response-style进行配置。
-
-graceful-response.response-style=0，或者不配置（默认情况），将以以下的格式进行返回：
-
-```json
-{
-  "status": {
-    "code": 1007,
-    "msg": "有内鬼，终止交易"
-  },
-  "payload": {
-  }
-}
-```
-
-graceful-response.response-style=1，将以以下的格式进行返回：
-
-```json
-{
-  "code": "1404",
-  "msg": "not found",
-  "data": {
-  }
-}
-```
-
-如果这两种格式均不满足业务需要，Graceful Response也支持用户自定义Response，关于自定义响应体的技术实现，请到[文档中心](https://doc.feiniaojin.com)进行了解。
-
-# 3.相关链接
-
-[文档中心](https://doc.feiniaojin.com)
-
-[项目示例-github](https://github.com/feiniaojin/graceful-response-example)
-
-[项目示例-gitee](https://gitee.com/igingo/graceful-response-example)
-
-# 4.star
-
-[![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
-
-# 5.贡献者
-
-<a href="https://github.com/feiniaojin/graceful-response/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
-</a>
-
-# 6.学习交流
-
-欢迎通过以下二维码联系作者，并加入Graceful Response用户交流群，申请好友时请备注“GR”。
+欢迎通过以下二维码联系作者、并加入Graceful Response用户交流群，申请好友时请备注“GR”。
 
 <div><img src="./assets/qr.jpg" style="width: 50%"/></div>
 
 公众号: 悟道领域驱动设计
 
 <div><img src="./assets/gzh.jpg" style="width: 50%"/></div>
+
+# 7.贡献者
+
+<a href="https://github.com/feiniaojin/graceful-response/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
+</a>
+
+# 8.star
+
+[![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
+
+
 
 
