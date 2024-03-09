@@ -1,4 +1,4 @@
-<div align=center><img src="https://s1.ax1x.com/2023/02/27/pp9rANF.png"></div>
+<div align=center><img src="./assets/project-name.png"></div>
 
 ![](https://img.shields.io/github/license/feiniaojin/graceful-response)
 [![GitHub stars](https://img.shields.io/github/stars/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/stargazers)
