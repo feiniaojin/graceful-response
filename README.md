@@ -6,96 +6,57 @@
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 ![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin/graceful-response)
 
-# 1. 简介
+# 1. 背景
+
+**Spring Boot接口开发现状**
+
+目前，业界使用Spring Boot进行接口开发时，往往存在效率底下、重复劳动、可读性差等问题。以下伪代码相信大家非常熟悉，我们大部分项目的Controller接口都是这样的。
+
+![代码现状](./assets/codeStatus.png)
+
+这段伪代码存在什么样的问题呢？
+
+1. 效率低下。Controller层的代码应该尽量简洁，上面的伪代码其实只是为了将数据查询的结果进行封装，使其以统一的格式进行返回。
+2. 重复劳动。以上捕获异常、封装执行结果的操作，每个接口都会进行一次，因此造成大量重复劳动
+3. 可读性低。上面的核心代码被淹没在许多冗余代码中，很难阅读，如同大海捞针
+
+Graceful Response这个组件解决这样的问题而诞生的。
+
+# 2.简介
 
 Graceful Response是一个Spring Boot技术栈下的优雅响应处理器，提供一站式统一返回值封装、全局异常处理、自定义异常错误码等功能，使用Graceful
 Response进行web接口开发不仅可以节省大量的时间，还可以提高代码质量，使代码逻辑更清晰。
 
-强烈推荐你花3分钟学会它！
+## 2.1 功能点
 
-本项目案例工程代码：https://github.com/feiniaojin/graceful-response-example.git ，注意选择最新版本的分支。
+1. 第三方组件适配（Swagger、actuator、JSON序列化等）
+2. 支持自定义响应体，满足不同项目的需求
+3. 自定义异常信息
+4. 断言增强并且填充异常信息到Response
+5. 例外请求放行
+6. 异常别名
+7. 常用配置项
+
+引入graceful response的效果如下：
+
+![代码现状](./assets/newCodeStatus.png)
+
+
+
+# 3.快速入门
+
+## 3.1 版本选择
+
+**Latest Version**
 
 | Spring Boot版本 | Graceful Response版本 | graceful-response-example分支 |
-|---------------|---------------------|-----------------------------|
-| 2.x           | 3.5.1-boot2         | 3.5.1-boot2                 |
-| 3.x           | 3.5.1-boot3         | 3.5.1-boot3                 |
+| --------------- | --------------------- | ----------------------------- |
+| 2.x             | 3.5.2-boot2           | 3.5.2-boot2                   |
+| 3.x             | 3.5.2-boot3           | 3.5.2-boot3                   |
 
-> 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，地址为：https://github.com/feiniaojin/graceful-response-boot2
+> 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，boot2和boot3除了支持的SpringBoot版本不一样，其他实现完全一致。boot2版本地址：[graceful-response-boot2](https://github.com/feiniaojin/graceful-response-boot2)
 
-> 3.5.1-boot2和3.5.1-boot3除了支持的SpringBoot版本不一样，其他实现完全一致，Maven引用时只需要根据对应的SpringBoot版本选择Graceful
-> Response的version即可，两者的groupId、artifactId是一致的。
-
-# 2. 快速入门
-
-## 2.1 Spring Boot接口开发现状
-
-目前，业界使用Spring Boot进行接口开发时，往往存在效率底下、重复劳动、可读性差等问题。以下伪代码相信大家非常熟悉，我们大部分项目的Controller接口都是这样的。
-
-```java
-
-@Controller
-public class Controller {
-
-    @GetMapping("/query")
-    @ResponseBody
-    public Response query(Map<String, Object> paramMap) {
-        Response res = new Response();
-        try {
-            //1.校验params参数合法性，包括非空校验、长度校验等
-            if (illegal(paramMap)) {
-                res.setCode(1);
-                res.setMsg("error");
-                return res;
-            }
-            //2.调用Service的一系列操作，得到查询结果
-            Object data = service.query(params);
-            //3.将操作结果设置到res对象中
-            res.setData(data);
-            res.setCode(0);
-            res.setMsg("ok");
-            return res;
-        } catch (Exception e) {
-            //4.异常处理：一堆丑陋的try...catch，如果有错误码的，还需要手工填充错误码
-            res.setCode(1);
-            res.setMsg("error");
-            return res;
-        }
-    }
-}
-```
-
-这段伪代码存在什么样的问题呢？
-
-第一个问题，效率低下。Controller层的代码应该尽量简洁，上面的伪代码其实只是为了将数据查询的结果进行封装，使其以统一的格式进行返回。例如以下格式的响应体：
-
-```json
-{
-  "code": 0,
-  "msg": "ok",
-  "data": {
-    "id": 1,
-    "name": "username"
-  }
-}
-```
-
-查询过程中如果发生异常，需要在Controller进行手工捕获，根据捕获的异常人工地设置错误码，当然，也用同样的格式封装错误码进行返回。
-
-可以看到，除了调用service层的query方法这一行，其他大部分的代码都执行进行结果的封装，大量的冗余、低价值的代码导致我们的开发活动效率很低。
-
-第二个问题，重复劳动。以上捕获异常、封装执行结果的操作，每个接口都会进行一次，因此造成大量重复劳动。
-
-第三个问题，可读性低。上面的核心代码被淹没在许多冗余代码中，很难阅读，如同大海捞针。
-
-我们可以通过Graceful Response这个组件解决这样的问题。
-
-## 2.2. 快速入门
-
-### 2.2.1 引入Graceful Response组件
-
-Graceful Response已发布至maven中央仓库，我们可以直接引入到项目中。
-
-maven依赖如下：
+## 3.2 maven依赖
 
 ```xml
 <dependency>
@@ -105,12 +66,9 @@ maven依赖如下：
 </dependency>
 ```
 
-| Spring Boot版本 | Graceful Response最新版本 |
-|---------------|-----------------------|		
-| 2.x           | 3.5.1-boot2           |	
-| 3.x           | 3.5.1-boot3           |
 
-### 2.2.2 启用Graceful Response
+
+## 3.3 开启Graceful Response
 
 在启动类中引入@EnableGracefulResponse注解，即可启用Graceful Response组件。
 
@@ -124,7 +82,7 @@ public class ExampleApplication {
 }
 ```
 
-### 2.2.3 Controller层
+## 3.4 Controller层
 
 引入Graceful Response后，我们不需要再手工进行查询结果的封装，直接返回实际结果即可，Graceful Response会自动完成封装的操作。
 
@@ -182,23 +140,11 @@ public class Controller {
 }
 ```
 
-### 2.2.4 Service层
+## 3.5 Service层
 
 在引入Graceful Response前，有的开发者在定义Service层的方法时，为了在接口中返回异常码，干脆直接将Service层方法定义为Response，淹没了方法的正常返回值。
 
-Response的代码如下。
-
-```java
-//lombok注解
-@Data
-public class Response {
-    private String code;
-    private String msg;
-    private Object data;
-}
-```
-
-直接返回Response的Service层方法：
+传统项目直接返回Response的Service层方法：
 
 ```java
 /**
@@ -210,8 +156,7 @@ public interface Service {
 }
 ```
 
-Graceful Response引入@ExceptionMapper注解，通过该注解将异常和错误码关联起来，这样Service方法就不需要再维护Response的响应码了，直接抛出业务异常，由Graceful
-Response进行异常和响应码的关联。
+Graceful Response引入@ExceptionMapper注解，通过该注解将异常和错误码关联起来，这样Service方法就不需要再维护Response的响应码了，直接抛出业务异常，由Graceful Response进行异常和响应码的关联。
 @ExceptionMapper的用法如下。
 
 ```java
@@ -265,7 +210,7 @@ Response会进行异常捕获，并将NotFoundException对应的异常码和异�
 }
 ```
 
-### 2.2.5 参数校验
+## 3.6 参数校验
 
 Graceful Response对JSR-303数据校验规范和Hibernate Validator进行了增强，Graceful Response自身不提供参数校验的功能，但是用户使用了Hibernate
 Validator后，Graceful Response可以通过@ValidationStatusCode注解为参数校验结果提供响应码，并将其统一封装返回。
@@ -327,7 +272,7 @@ public class Controller {
 }
 ```
 
-### 2.2.6 自定义Response格式
+## 3.7 自定义Response格式
 
 Graceful Response内置了两种风格的响应格式，并通过graceful-response.response-style进行配置。
 
@@ -357,29 +302,23 @@ graceful-response.response-style=1，将以以下的格式进行返回：
 
 如果这两种格式均不满足业务需要，Graceful Response也支持用户自定义Response，关于自定义响应体的技术实现，请到[文档中心](https://doc.feiniaojin.com)进行了解。
 
-# 3. 详细文档
+# 4.相关文档
 
-本项目提供的进阶功能，包括
+[文档中心](https://doc.feiniaojin.com)
 
-- 第三方组件适配（Swagger、actuator等）
-- 自定义自定义Response
-- 例外请求放行
-- 异常别名
-- 常用配置项
+[项目示例](https://gitee.com/igingo/graceful-response-example)
 
-其详细使用文档均维护在[文档中心](https://doc.feiniaojin.com)。
-
-# 4. star
+# 5.star
 
 [![Star History Chart](https://api.star-history.com/svg?repos=feiniaojin/graceful-response&type=Date)](https://star-history.com/#feiniaojin/graceful-response&Date)
 
-# 5. 贡献者
+# 6.贡献者
 
 <a href="https://github.com/feiniaojin/graceful-response/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=feiniaojin/graceful-response" />
 </a>
 
-# 6. 联系作者并加入用户交流群
+# 7.学习交流
 
 欢迎通过以下二维码联系作者，并加入Graceful Response用户交流群，申请好友时请备注“GR”。
 
