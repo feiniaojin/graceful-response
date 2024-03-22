@@ -65,4 +65,18 @@ public class Test1 {
         ResultMatcher payloadMatcher = MockMvcResultMatchers.jsonPath("$.status.msg").value("id不等于1");
         actions.andExpectAll(statusMatcher, codeMatcher, payloadMatcher).andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    @DisplayName("Test1:异常信息填充Response对象msg字段+函数式包装断言+错误码+响应数据")
+    public void testAssert3InTest1(@Autowired MockMvc mockMvc) throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/example/assert3?id=0");
+        ResultActions actions = mockMvc.perform(requestBuilder);
+        StatusResultMatchers status = MockMvcResultMatchers.status();
+        ResultMatcher statusMatcher = status.is(200);
+
+        ResultMatcher codeMatcher = MockMvcResultMatchers.jsonPath("$.status.code").value("1001");
+        ResultMatcher messageMatcher = MockMvcResultMatchers.jsonPath("$.status.msg").value("id不等于1");
+        ResultMatcher payloadMatcher = MockMvcResultMatchers.jsonPath("$.payload").value("data");
+        actions.andExpectAll(statusMatcher, codeMatcher, messageMatcher, payloadMatcher).andDo(MockMvcResultHandlers.print());
+    }
 }

@@ -264,6 +264,13 @@ public class ExampleController {
         GracefulResponse.wrapAssert("1001", () -> Assert.isTrue(id == 1, "id不等于1"));
     }
 
+    @RequestMapping("/assert3")
+    @ResponseBody
+    public void assert3(Integer id) {
+        logger.info("assert3");
+        GracefulResponse.wrapAssert("1001","data", () -> Assert.isTrue(id == 1, "id不等于1"));
+    }
+
     @RequestMapping("/customExceptionDetailMessage0")
     public void customExceptionDetailMessage0() {
         throw new ReplaceMsgException();

@@ -70,6 +70,12 @@ public class DefaultResponseFactory implements ResponseFactory {
         return bean;
     }
 
+    @Override public Response newInstance(ResponseStatus statusLine,Object data){
+        Response bean = this.newInstance(statusLine);
+        bean.setPayload(data);
+        return bean;
+    }
+
     @Override
     public Response newSuccessInstance() {
         Response emptyInstance = this.newEmptyInstance();

@@ -43,4 +43,12 @@ public class GracefulResponse {
             throw new GracefulResponseException(code, e.getMessage(), e);
         }
     }
+
+    public static void wrapAssert(String code,Object data,AssertFunction assertFunction){
+        try {
+            assertFunction.doAssert();
+        } catch (Exception e) {
+            throw new GracefulResponseDataException(code,e.getMessage(),e,data);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.feiniaojin.gracefulresponse.advice;
 
 import com.feiniaojin.gracefulresponse.ExceptionAliasRegister;
+import com.feiniaojin.gracefulresponse.GracefulResponseDataException;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.api.ExceptionAliasFor;
@@ -67,6 +68,22 @@ public class GlobalExceptionAdvice implements ApplicationContextAware {
             statusLine = fromExceptionInstance(throwable);
         }
         return responseFactory.newInstance(statusLine);
+    }
+
+    /**
+     * 带数据的异常处理逻辑.
+     *
+     * @param throwable 业务逻辑抛出的异常
+     * @return 统一返回包装后的结果
+     */
+    @ExceptionHandler({GracefulResponseDataException.class})
+    @ResponseBody
+    public Response exceptionHandler(GracefulResponseDataException throwable) {
+        if (gracefulResponseProperties.isPrintExceptionInGlobalAdvice()) {
+            logger.error("Graceful Response:GlobalExceptionAdvice捕获到异常,message=[{}]", throwable.getMessage(), throwable);
+        }
+        ResponseStatus statusLine = fromGracefulResponseExceptionInstance(throwable);
+        return responseFactory.newInstance(statusLine,throwable.getData());
     }
 
     private ResponseStatus fromGracefulResponseExceptionInstance(GracefulResponseException exception) {
