@@ -14,17 +14,11 @@ Graceful Response是一个Spring Boot技术栈下的优雅响应处理组件，�
 
 代码仓库如下，欢迎star！
 
-- Gitee
-
-```text
-https://gitee.com/igingo/graceful-response
-```
 - GitHub
 
 ```text
 https://github.com/feiniaojin/graceful-response
 ```
-国内开发者更推荐通过Gitee进行仓库访问和沟通交流。
 
 # 2. 功能列表
 - 统一返回值封装
