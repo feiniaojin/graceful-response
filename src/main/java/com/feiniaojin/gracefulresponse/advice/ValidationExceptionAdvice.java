@@ -143,12 +143,7 @@ public class ValidationExceptionAdvice {
 
     private String fieldSimpleName(String fieldName) {
         int lastIndex = fieldName.lastIndexOf(".");
-        StringBuilder stringBuilder = new StringBuilder();
-        int length = fieldName.length();
-        for (int i = lastIndex + 1; i < length; i++) {
-            stringBuilder.append(fieldName.charAt(i));
-        }
-        return stringBuilder.toString();
+        return fieldName.substring(lastIndex + 1);
     }
 
     /**
@@ -159,11 +154,7 @@ public class ValidationExceptionAdvice {
      */
     private String fieldParentPath(String fieldName) {
         int lastIndex = fieldName.lastIndexOf(".");
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < lastIndex; i++) {
-            stringBuilder.append(fieldName.charAt(i));
-        }
-        return stringBuilder.toString();
+        return fieldName.substring(0, lastIndex);
     }
 
     private String leafPropertyFieldName(String fieldName) {
