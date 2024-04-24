@@ -4,7 +4,6 @@ import com.feiniaojin.gracefulresponse.defaults.DefaultConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 核心配置类.
@@ -62,6 +61,11 @@ public class GracefulResponseProperties {
      * 例外包路径
      */
     private List<String> excludePackages;
+
+    /**
+     * 例外返回类型
+     */
+    private List<Class> excludeReturnTypes;
 
     /**
      * 不使用@ExceptionMapper和@ExceptionAliasFor修饰的原生异常
@@ -145,6 +149,14 @@ public class GracefulResponseProperties {
 
     public void setExcludePackages(List<String> excludePackages) {
         this.excludePackages = excludePackages;
+    }
+
+    public List<Class> getExcludeReturnTypes() {
+        return excludeReturnTypes;
+    }
+
+    public void setExcludeReturnTypes(List<Class> excludeReturnTypes) {
+        this.excludeReturnTypes = excludeReturnTypes;
     }
 
     public Boolean getOriginExceptionUsingDetailMessage() {

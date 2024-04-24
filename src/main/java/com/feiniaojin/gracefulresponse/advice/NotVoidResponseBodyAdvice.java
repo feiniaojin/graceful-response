@@ -85,6 +85,13 @@ public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                 return false;
             }
         }
+
+        List<Class> excludeReturnTypes = properties.getExcludeReturnTypes();
+        if (!CollectionUtils.isEmpty(excludeReturnTypes) && excludeReturnTypes.contains(method.getReturnType())) {
+            logger.debug("Graceful Response:匹配到excludeReturnTypes例外配置，跳过:returnType={},", method.getReturnType());
+            return false;
+        }
+
         logger.debug("Graceful Response:非空返回值，需要进行封装");
         return true;
     }
