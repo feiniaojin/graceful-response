@@ -36,9 +36,9 @@ import java.util.Set;
  */
 @ControllerAdvice
 @Order(value = 1000)
-public class NotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
+public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
-    private final Logger logger = LoggerFactory.getLogger(NotVoidResponseBodyAdvice.class);
+    private final Logger logger = LoggerFactory.getLogger(GrNotVoidResponseBodyAdvice.class);
 
     @Resource
     private ResponseFactory responseFactory;

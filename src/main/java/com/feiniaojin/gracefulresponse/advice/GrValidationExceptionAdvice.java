@@ -41,9 +41,9 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Order(100)
-public class ValidationExceptionAdvice {
+public class GrValidationExceptionAdvice {
 
-    private final Logger logger = LoggerFactory.getLogger(ValidationExceptionAdvice.class);
+    private final Logger logger = LoggerFactory.getLogger(GrValidationExceptionAdvice.class);
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 

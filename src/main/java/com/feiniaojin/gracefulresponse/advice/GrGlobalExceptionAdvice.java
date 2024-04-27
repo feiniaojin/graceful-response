@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @ControllerAdvice
 @Order(200)
-public class GlobalExceptionAdvice implements ApplicationContextAware {
+public class GrGlobalExceptionAdvice implements ApplicationContextAware {
 
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
+    private final Logger logger = LoggerFactory.getLogger(GrGlobalExceptionAdvice.class);
 
     @Resource
     private ResponseStatusFactory responseStatusFactory;

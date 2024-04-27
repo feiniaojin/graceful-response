@@ -25,7 +25,7 @@ import java.util.Locale;
  */
 @ControllerAdvice
 @Order(2000)
-public class I18nAdvice implements ResponseBodyAdvice<Response> {
+public class GrI18nAdvice implements ResponseBodyAdvice<Response> {
 
     private static final String[] emptyArray = new String[0];
 
@@ -33,7 +33,7 @@ public class I18nAdvice implements ResponseBodyAdvice<Response> {
     private GracefulResponseProperties properties;
 
     @Resource
-    private MessageSource messageSource;
+    private MessageSource grMessageSource;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -52,7 +52,7 @@ public class I18nAdvice implements ResponseBodyAdvice<Response> {
         }
         ResponseStatus bodyStatus = body.getStatus();
         String code = bodyStatus.getCode();
-        String renderMsg = messageSource.getMessage(code, emptyArray, null, locale);
+        String renderMsg = grMessageSource.getMessage(code, emptyArray, null, locale);
         //有国际化配置的才会替换，否则使用默认配置的
         if (StringUtils.hasText(renderMsg)) {
             bodyStatus.setMsg(renderMsg);
