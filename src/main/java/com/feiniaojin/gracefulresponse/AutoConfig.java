@@ -8,8 +8,10 @@ import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatusFactoryImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 /**
  * 全局返回值处理的自动配置.
@@ -72,4 +74,23 @@ public class AutoConfig {
     public Init init() {
         return new Init();
     }
+
+    @Bean
+    public I18nAdvice i18nAdvice() {
+        return new I18nAdvice();
+    }
+
+    /**
+     *  国际化配置
+     * @return
+     */
+    @Bean
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasenames("i18n/graceful-response");
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setCacheSeconds(30);
+        return messageSource;
+    }
+
 }

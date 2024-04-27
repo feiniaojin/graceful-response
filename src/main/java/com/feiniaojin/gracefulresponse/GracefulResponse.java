@@ -43,4 +43,5 @@ public class GracefulResponse {
             throw new GracefulResponseException(code, e.getMessage(), e);
         }
     }
+
 }

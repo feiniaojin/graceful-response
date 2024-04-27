@@ -25,4 +25,6 @@ public class AdviceSupport {
                 || AbstractJackson2HttpMessageConverter.class.isAssignableFrom(clazz)
                 || clazz.getName().equals(properties.getJsonHttpMessageConverter());
     }
+
+
 }

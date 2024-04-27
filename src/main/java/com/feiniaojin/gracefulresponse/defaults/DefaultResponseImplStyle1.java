@@ -8,22 +8,19 @@ import java.util.Collections;
 
 public class DefaultResponseImplStyle1 implements Response {
 
-    private String code;
-
-    private String msg;
-
     private Object data = Collections.emptyMap();
+
+    private ResponseStatus status;
 
     @Override
     public void setStatus(ResponseStatus statusLine) {
-        this.code = statusLine.getCode();
-        this.msg = statusLine.getMsg();
+        this.status = statusLine;
     }
 
     @Override
     @JsonIgnore
     public ResponseStatus getStatus() {
-        return null;
+        return status;
     }
 
     @Override
@@ -38,19 +35,19 @@ public class DefaultResponseImplStyle1 implements Response {
     }
 
     public String getCode() {
-        return code;
+        return this.status.getCode();
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.status.setCode(code);
     }
 
     public String getMsg() {
-        return msg;
+        return this.status.getMsg();
     }
 
     public void setMsg(String msg) {
-        this.msg = msg;
+        this.status.setMsg(msg);
     }
 
     public Object getData() {
