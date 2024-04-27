@@ -7,7 +7,7 @@ import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
 
 /**
  * 带数据的异常响应
- * @Author twolf
+ * @author twolf
  */
 public class GracefulResponseDataException extends GracefulResponseException {
     private final Logger logger = LoggerFactory.getLogger(GracefulResponseDataException.class);

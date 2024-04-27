@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import java.util.Locale;
+
 /**
  * 全局返回值处理的自动配置.
  *
@@ -91,9 +93,9 @@ public class AutoConfig {
     @ConditionalOnProperty(prefix = "graceful-response", name = "i18n", havingValue = "true")
     public MessageSource grMessageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/graceful-response");
+        messageSource.setBasenames("i18n/graceful-response","i18n/empty-messages");
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setCacheSeconds(30);
+        messageSource.setDefaultLocale(Locale.CHINA);
         return messageSource;
     }
 }
