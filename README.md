@@ -8,7 +8,7 @@
 
 # 1. 项目介绍
 
-Graceful Response是一个Spring Boot技术栈下的响应处理解决方案，可以帮助开发者优雅地完成统一响应格式数据封装、全局异常处理、错误码填充等过程，提高开发效率，提高代码质量。
+Graceful Response是Spring Boot技术体系下的响应处理解决方案，可以帮助开发者优雅地完成包括统一响应格式数据封装、全局异常处理、错误码填充、异常消息国际化等处理过程，提高开发效率，提高代码质量。
 
 ![代码现状](./assets/use-gr.png)
 
@@ -19,6 +19,12 @@ Graceful Response是一个Spring Boot技术栈下的响应处理解决方案，�
 ```text
 https://github.com/feiniaojin/graceful-response
 ```
+
+**不怕学不会，B站教学视频**：https://www.bilibili.com/video/BV1Wm411C7vs/
+
+**不怕学不会，B站教学视频**：https://www.bilibili.com/video/BV1Wm411C7vs/
+
+**不怕学不会，B站教学视频**：https://www.bilibili.com/video/BV1Wm411C7vs/
 
 # 2. 功能列表
 - 统一返回值封装
