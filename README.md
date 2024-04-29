@@ -116,7 +116,7 @@ public class Controller {
 | Spring Boot版本 | maven版本   | graceful-response-example分支 |
 | --------------- | ----------- | ----------------------------- |
 | 2.x             | 3.5.2-boot2 | 3.5.2-boot2                   |
-| 3.x             | 3.5.2-boot3 | 3.5.2-boot3                   |
+| 3.x             | 4.0.1-boot3 | 4.0.0-boot3                   |
 
 > 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，boot2和boot3除了支持的SpringBoot版本不一样，其他实现完全一致。boot2版本地址：[graceful-response-boot2](https://github.com/feiniaojin/graceful-response-boot2)
 
