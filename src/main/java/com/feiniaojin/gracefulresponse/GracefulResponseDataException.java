@@ -3,8 +3,6 @@ package com.feiniaojin.gracefulresponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
-
 /**
  * 带数据的异常响应
  * @author twolf

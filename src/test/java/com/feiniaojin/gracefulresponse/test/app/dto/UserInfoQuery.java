@@ -1,6 +1,5 @@
 package com.feiniaojin.gracefulresponse.test.app.dto;
 
-import com.feiniaojin.gracefulresponse.api.ValidationStatusCode;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
