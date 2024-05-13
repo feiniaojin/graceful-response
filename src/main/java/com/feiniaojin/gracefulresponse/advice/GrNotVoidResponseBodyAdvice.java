@@ -79,7 +79,20 @@ public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             }
             return false;
         }
-
+        //有ExcludeFromGracefulResponse注解修饰的类，也跳过
+        if (method.getDeclaringClass().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Graceful Response:类被@ExcludeFromGracefulResponse注解修饰，跳过:methodName={}", method.getName());
+            }
+            return false;
+        }
+        //有ExcludeFromGracefulResponse注解修饰的返回类型，也跳过
+        if ( method.getReturnType().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Graceful Response:返回类型被@ExcludeFromGracefulResponse注解修饰，跳过:methodName={}", method.getName());
+            }
+            return false;
+        }
         //配置了例外包路径，则该路径下的controller都不再处理
         List<String> excludePackages = properties.getExcludePackages();
         if (!CollectionUtils.isEmpty(excludePackages)) {
