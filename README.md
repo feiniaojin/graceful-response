@@ -272,13 +272,10 @@ https://doc.feiniaojin.com/graceful-response/home.html
 [点击访问文档中心](https://doc.feiniaojin.com/graceful-response/home.html
 )
 ## 5.2 代码示例
-- Gitee
-```text
-https://github.com/feiniaojin/graceful-response-example
-```
+
 - GitHub
 ```text
-https://gitee.com/igingo/graceful-response-example
+https://github.com/feiniaojin/graceful-response-example
 ```
 
 # 6.交流和反馈
