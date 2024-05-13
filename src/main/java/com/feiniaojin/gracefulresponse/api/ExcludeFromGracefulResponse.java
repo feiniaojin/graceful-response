@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  *
  * @author lihao3
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface ExcludeFromGracefulResponse {
