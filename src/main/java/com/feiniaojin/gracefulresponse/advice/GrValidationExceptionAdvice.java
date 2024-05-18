@@ -63,8 +63,7 @@ public class GrValidationExceptionAdvice {
     @ResponseBody
     public Response exceptionHandler(Exception e) throws Exception {
 
-        if (e instanceof MethodArgumentNotValidException
-                || e instanceof BindException) {
+        if (e instanceof BindException) {
             ResponseStatus responseStatus = this.handleBindException((BindException) e);
             return responseFactory.newInstance(responseStatus);
         }
