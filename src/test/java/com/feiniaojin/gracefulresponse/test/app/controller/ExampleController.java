@@ -9,6 +9,7 @@ import com.feiniaojin.gracefulresponse.test.app.dto.UserInfoQuery;
 import com.feiniaojin.gracefulresponse.test.app.dto.UserInfoView;
 import com.feiniaojin.gracefulresponse.test.app.exceptions.ReplaceMsgException;
 import com.feiniaojin.gracefulresponse.test.app.service.ExampleService;
+import com.feiniaojin.gracefulresponse.test.app.vo.Result;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -268,7 +269,7 @@ public class ExampleController {
     @ResponseBody
     public void assert3(Integer id) {
         logger.info("assert3");
-        GracefulResponse.wrapAssert("1001","data", () -> Assert.isTrue(id == 1, "id不等于1"));
+        GracefulResponse.wrapAssert("1001", "data", () -> Assert.isTrue(id == 1, "id不等于1"));
     }
 
     @RequestMapping("/customExceptionDetailMessage0")
@@ -279,5 +280,18 @@ public class ExampleController {
     @RequestMapping("/customExceptionDetailMessage1")
     public void customExceptionDetailMessage1() {
         throw new ReplaceMsgException("我自己定义了异常信息");
+    }
+
+    /**
+     * 测试直接返回自定义对象的情况
+     * http://localhost:9090/example/result
+     */
+    @RequestMapping("/result")
+    @ResponseBody
+    public Result result() {
+        Result result = new Result();
+        result.setCode(0);
+        result.setMsg("Ok");
+        return result;
     }
 }
