@@ -17,6 +17,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -93,43 +94,50 @@ public class GrValidationExceptionAdvice {
 
         //DTO入参属性
         List<FieldError> fieldErrors = e.getFieldErrors();
-        FieldError fieldError = fieldErrors.get(0);
-        String fieldName = fieldError.getField();
-        Field field = null;
-        Class<?> clazz = null;
-        Object target = bindingResult.getTarget();
-        //不包含.，说明直接是根路径
-        if (!fieldName.contains(".")) {
-            clazz = target.getClass();
-        } else {
-            String fieldParentPath = fieldParentPath(fieldName);
-            fieldName = fieldSimpleName(fieldName);
-            Expression expression = parser.parseExpression(fieldParentPath);
-            clazz = expression.getValue(target).getClass();
-        }
-        field = clazz.getDeclaredField(fieldName);
+        if (fieldErrors.size() > 0) {
+            FieldError fieldError = fieldErrors.get(0);
+            String fieldName = fieldError.getField();
+            Field field = null;
+            Class<?> clazz = null;
+            Object target = bindingResult.getTarget();
+            //不包含.，说明直接是根路径
+            if (!fieldName.contains(".")) {
+                clazz = target.getClass();
+            } else {
+                String fieldParentPath = fieldParentPath(fieldName);
+                fieldName = fieldSimpleName(fieldName);
+                Expression expression = parser.parseExpression(fieldParentPath);
+                clazz = expression.getValue(target).getClass();
+            }
+            field = clazz.getDeclaredField(fieldName);
 
-        ValidationStatusCode annotation = field.getAnnotation(ValidationStatusCode.class);
-        //属性上找到注解
-        if (annotation != null) {
-            code = annotation.code();
-            return responseStatusFactory.newInstance(code, msg);
-        }
-        //属性所在类上面找到注解
-        annotation = clazz.getAnnotation(ValidationStatusCode.class);
-        if (annotation != null) {
-            code = annotation.code();
-            return responseStatusFactory.newInstance(code, msg);
-        }
-
-        //根类上找注解
-        if (target.getClass() != clazz) {
-            annotation = target.getClass().getAnnotation(ValidationStatusCode.class);
+            ValidationStatusCode annotation = field.getAnnotation(ValidationStatusCode.class);
+            //属性上找到注解
             if (annotation != null) {
                 code = annotation.code();
                 return responseStatusFactory.newInstance(code, msg);
             }
+            //属性所在类上面找到注解
+            annotation = clazz.getAnnotation(ValidationStatusCode.class);
+            if (annotation != null) {
+                code = annotation.code();
+                return responseStatusFactory.newInstance(code, msg);
+            }
+            //根类上找注解
+            if (target.getClass() != clazz) {
+                annotation = target.getClass().getAnnotation(ValidationStatusCode.class);
+                if (annotation != null) {
+                    code = annotation.code();
+                    return responseStatusFactory.newInstance(code, msg);
+                }
+            }
+        }else {
+            //
+            Object target = e.getTarget();
+            List<ObjectError> allErrors1 = e.getAllErrors();
+            logger.info(target.getClass().toString());
         }
+
         //默认的参数异常码
         code = gracefulResponseProperties.getDefaultValidateErrorCode();
         if (StringUtils.hasLength(code)) {

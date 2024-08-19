@@ -1,5 +1,12 @@
 package com.feiniaojin.gracefulresponse;
 
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
+
+/**
+ * 组件内部通用异常
+ *
+ * @author qinyujie
+ */
 public class GracefulResponseException extends RuntimeException {
 
     /**
@@ -25,6 +32,12 @@ public class GracefulResponseException extends RuntimeException {
         this.msg = msg;
     }
 
+    public GracefulResponseException(ResponseStatus responseStatus, String msg) {
+        super(msg);
+        this.code = responseStatus.getCode();
+        this.msg = responseStatus.getMsg();
+    }
+
     public GracefulResponseException(String msg, Throwable cause) {
         super(msg, cause);
         this.msg = msg;
@@ -34,6 +47,12 @@ public class GracefulResponseException extends RuntimeException {
         super(msg, cause);
         this.code = code;
         this.msg = msg;
+    }
+
+    public GracefulResponseException(ResponseStatus responseStatus, Throwable cause) {
+        super(responseStatus.getMsg(), cause);
+        this.code = responseStatus.getCode();
+        this.msg = responseStatus.getMsg();
     }
 
     public String getCode() {

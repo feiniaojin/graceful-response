@@ -29,6 +29,7 @@ https://github.com/feiniaojin/graceful-response
 **不怕学不会，B站教学视频**：https://www.bilibili.com/video/BV1Wm411C7vs/
 
 # 2. 功能列表
+
 - 统一返回值封装
 - void返回类型封装
 - 全局异常处理
@@ -41,69 +42,29 @@ https://github.com/feiniaojin/graceful-response
 
 更多功能，请到[文档中心](https://doc.feiniaojin.com/graceful-response/home.html)的项目主页进行了解。
 
-# 3. 核心应用场景
+# 3. 推广感谢
 
-目前，业界使用Spring Boot进行接口开发时，往往存在效率低下、重复劳动、可读性差等问题。以下伪代码相信大家非常熟悉，我们大部分项目的Controller接口都是这样的。
+感谢以下公众号或者自媒体对本项目的推广。
 
-```java
-@Controller
-public class Controller {
-    
-    @GetMapping("/query")
-    @ResponseBody
-    public Response query(Map<String, Object> paramMap) {
-        Response res = new Response();
-        try {
-            //1.校验params参数合法性，包括非空校验、长度校验等
-            if (illegal(paramMap)) {
-                res.setCode(1);
-                res.setMsg("error");
-                return res;
-            }
-            //2.调用Service的一系列操作，得到查询结果
-            Object data = service.query(params);
-            //3.将操作结果设置到res对象中
-            res.setData(data);
-            res.setCode(0);
-            res.setMsg("ok");
-            return res;
-        } catch (Exception e) {
-            //4.异常处理：一堆丑陋的try...catch，如果有错误码的，还需要手工填充错误码
-            res.setCode(1);
-            res.setMsg("error");
-            return res;
-        }
-    }
-}
-```
-
-主要体现在以下三个点：
-
-**价值低下：** Controller层的代码应该尽量简洁，上面的伪代码其实只是为了将数据查询的结果进行封装，使其以统一的格式进行返回。
-
-**重复劳动：** 以上捕获异常、封装执行结果的操作，每个接口都会进行一次，因此造成大量重复劳动。
-
-**可读性低：** 上面的核心代码被淹没在许多冗余代码中，很难阅读，如同大海捞针。
-
-Graceful Response可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，使代码更精简更清晰，可以使开发者有更多的注意力聚焦在业务代码上。效果如下：
-
-```java
-@Controller
-public class Controller {
-    @RequestMapping("/get")
-    @ResponseBody
-    public UserInfoView get(Long id) {
-        log.info("id={}", id);
-        return UserInfoView.builder().id(id).name("name" + id).build();
-    }
-}
-```
+| 自媒体名称      | 类型  | 链接                                                |
+|------------|-----|---------------------------------------------------|
+| 芋道源码       | 公众号 | https://mp.weixin.qq.com/s/VG6n5IsIDez8iZkY8JK6QQ |
+| Java面试那些事  | 公众号 | https://mp.weixin.qq.com/s/V9MhNVj3uQRrmnrfy9KkAQ |
+| 编程奇点       | 公众号 | https://mp.weixin.qq.com/s/cQWgivkpuXGEijRR1WRt0g |
+| macrozheng | 公众号 | https://mp.weixin.qq.com/s/XAHBzVRFuMJTEh8Y1Xvv4g |
+| Java后端技术   | 公众号 | https://mp.weixin.qq.com/s/4ssfZftGUqq0l9nW9lShLA |
+| Java高性能架构  | 公众号 | https://mp.weixin.qq.com/s/XImjkUExBHEklgrLnrINyw |
+| 技术老男孩      | 公众号 | https://mp.weixin.qq.com/s/6gafudNaNTK1FRIdvNMXXw |
+| Java知音     | 公众号 | https://mp.weixin.qq.com/s/ZNmpTZnL2XqsPN2ayq0_4Q |
+| Java123    | 公众号 | https://mp.weixin.qq.com/s/MF0PaawFILzNBMM78O_Pnw |
+| 程序员追风      | 公众号 | https://mp.weixin.qq.com/s/wlY0phnXEiO7E_basxsWJw |
 
 # 4.快速入门
 
 ## 4.1 maven依赖
 
 ```xml
+
 <dependency>
     <groupId>com.feiniaojin</groupId>
     <artifactId>graceful-response</artifactId>
@@ -115,18 +76,21 @@ public class Controller {
 
 **Latest Version**
 
-| Spring Boot版本 | maven版本   | graceful-response-example分支 |
-| --------------- | ----------- | ----------------------------- |
-| 2.x             | 3.5.2-boot2 | 3.5.2-boot2                   |
-| 3.x             | 4.0.1-boot3 | 4.0.0-boot3                   |
+| Spring Boot版本 | maven版本     | graceful-response-example分支 |
+|---------------|-------------|-----------------------------|
+| 2.x           | 3.5.2-boot2 | 3.5.2-boot2                 |
+| 3.x           | 4.0.1-boot3 | 4.0.0-boot3                 |
 
-> 注意，boot2版本的Graceful Response源码由单独的仓库进行维护，boot2和boot3除了支持的SpringBoot版本不一样，其他实现完全一致。boot2版本地址：[graceful-response-boot2](https://github.com/feiniaojin/graceful-response-boot2)
+> 注意，boot2版本的Graceful
+>
+Response源码由单独的仓库进行维护，boot2和boot3除了支持的SpringBoot版本不一样，其他实现完全一致。boot2版本地址：[graceful-response-boot2](https://github.com/feiniaojin/graceful-response-boot2)
 
 ## 4.3 注解开启
 
 在启动类中引入@EnableGracefulResponse注解，即可启用Graceful Response组件。
 
 ```java
+
 @EnableGracefulResponse
 @SpringBootApplication
 public class ExampleApplication {
@@ -145,6 +109,7 @@ public class ExampleApplication {
 Controller层示例如下。
 
 ```java
+
 @Controller
 public class Controller {
     @RequestMapping("/get")
@@ -212,7 +177,8 @@ public interface Service {
 }
 ```
 
-Graceful Response引入@ExceptionMapper注解，通过该注解将异常和错误码关联起来，这样Service方法就不需要再维护Response的响应码了，直接抛出业务异常，由Graceful Response进行异常和响应码的关联。
+Graceful Response引入@ExceptionMapper注解，通过该注解将异常和错误码关联起来，这样Service方法就不需要再维护Response的响应码了，直接抛出业务异常，由Graceful
+Response进行异常和响应码的关联。
 @ExceptionMapper的用法如下。
 
 ```java
@@ -267,15 +233,20 @@ Response会进行异常捕获，并将NotFoundException对应的异常码和异�
 ```
 
 # 5.文档和示例
+
 ## 5.1 文档中心
+
 ```text
 https://doc.feiniaojin.com/graceful-response/home.html
 ```
+
 [点击访问文档中心](https://doc.feiniaojin.com/graceful-response/home.html
 )
+
 ## 5.2 代码示例
 
 - GitHub
+
 ```text
 https://github.com/feiniaojin/graceful-response-example
 ```

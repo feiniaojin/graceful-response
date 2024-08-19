@@ -1,6 +1,7 @@
 package com.feiniaojin.gracefulresponse;
 
 import com.feiniaojin.gracefulresponse.api.AssertFunction;
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
 /**
  * GracefulResponse工具类
@@ -19,6 +20,13 @@ public class GracefulResponse {
 
     /**
      * 需要抛自定义异常时，调用该方法
+     */
+    public static void raiseException(ResponseStatus responseStatus) {
+        throw new GracefulResponseException(responseStatus.getCode(), responseStatus.getMsg());
+    }
+
+    /**
+     * 需要抛自定义异常时，调用该方法
      *
      * @param code      异常码
      * @param msg       异常提示
@@ -26,6 +34,13 @@ public class GracefulResponse {
      */
     public static void raiseException(String code, String msg, Throwable throwable) {
         throw new GracefulResponseException(code, msg, throwable);
+    }
+
+    /**
+     * 需要抛自定义异常时，调用该方法
+     */
+    public static void raiseException(ResponseStatus responseStatus, Throwable throwable) {
+        throw new GracefulResponseException(responseStatus.getCode(), responseStatus.getMsg(), throwable);
     }
 
     public static void wrapAssert(AssertFunction assertFunction) {
@@ -44,11 +59,21 @@ public class GracefulResponse {
         }
     }
 
-    public static void wrapAssert(String code,Object data,AssertFunction assertFunction){
+    public static void wrapAssert(ResponseStatus responseStatus, AssertFunction assertFunction) {
         try {
             assertFunction.doAssert();
         } catch (Exception e) {
-            throw new GracefulResponseDataException(code,e.getMessage(),e,data);
+            throw new GracefulResponseException(responseStatus, e);
         }
     }
+
+    public static void wrapAssert(String code, Object data, AssertFunction assertFunction) {
+        try {
+            assertFunction.doAssert();
+        } catch (Exception e) {
+            throw new GracefulResponseDataException(code, e.getMessage(), e, data);
+        }
+    }
+
+
 }
