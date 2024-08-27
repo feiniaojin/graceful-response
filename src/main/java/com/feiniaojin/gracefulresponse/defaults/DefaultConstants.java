@@ -2,6 +2,8 @@ package com.feiniaojin.gracefulresponse.defaults;
 
 /**
  * 默认的响应码和提示信息
+ *
+ * @author qinyujie
  */
 public class DefaultConstants {
 

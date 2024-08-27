@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author qinyujie
+ */
 public class ExceptionAliasRegister {
 
     private final Logger logger = LoggerFactory.getLogger(ExceptionAliasRegister.class);

@@ -8,7 +8,6 @@ public interface Response {
 
     /**
      * 设置响应行
-     *
      */
     void setStatus(ResponseStatus statusLine);
 

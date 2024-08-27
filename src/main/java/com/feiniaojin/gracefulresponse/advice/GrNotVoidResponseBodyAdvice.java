@@ -1,6 +1,8 @@
 package com.feiniaojin.gracefulresponse.advice;
 
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
+import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
 import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -36,31 +37,50 @@ import java.util.Set;
  */
 @ControllerAdvice
 @Order(value = 1000)
-public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
+public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice implements ResponseBodyAdvicePredicate,
+        ResponseBodyAdviceProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(GrNotVoidResponseBodyAdvice.class);
 
     @Resource
     private ResponseFactory responseFactory;
+
     @Resource
     private GracefulResponseProperties properties;
+
     @Resource
     private AdviceSupport adviceSupport;
+
     /**
      * 路径过滤器
      */
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
-    /**
-     * 只处理不返回void的，并且MappingJackson2HttpMessageConverter支持的类型.
-     *
-     * @param methodParameter 方法参数
-     * @param clazz           处理器
-     * @return 是否支持
-     */
+    public static void main(String[] args) {
+        AntPathMatcher matcher = new AntPathMatcher();
+//        boolean match = matcher.match("/**/b/**", "/a/b/c/");
+        boolean match = matcher.match("*.feiniaojin.*", "com.feiniaojin.ddd");
+        System.out.println(match);
+    }
+
     @Override
-    public boolean supports(MethodParameter methodParameter,
-                            Class<? extends HttpMessageConverter<?>> clazz) {
+    public Object process(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        if (body == null) {
+            return responseFactory.newSuccessInstance();
+        } else if (body instanceof Response) {
+            return body;
+        } else {
+            if (logger.isDebugEnabled()) {
+                String path = request.getURI().getPath();
+                logger.debug("Graceful Response:非空返回值，执行封装:path={}", path);
+            }
+            return responseFactory.newSuccessInstance(body);
+        }
+    }
+
+    @Override
+    public boolean test(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
+
         Method method = methodParameter.getMethod();
 
         //method为空、返回值为void、非JSON，直接跳过
@@ -79,6 +99,7 @@ public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             }
             return false;
         }
+
         //有ExcludeFromGracefulResponse注解修饰的类，也跳过
         if (method.getDeclaringClass().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
             if (logger.isDebugEnabled()) {
@@ -86,13 +107,15 @@ public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             }
             return false;
         }
+
         //有ExcludeFromGracefulResponse注解修饰的返回类型，也跳过
-        if ( method.getReturnType().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
+        if (method.getReturnType().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Graceful Response:返回类型被@ExcludeFromGracefulResponse注解修饰，跳过:methodName={}", method.getName());
             }
             return false;
         }
+
         //配置了例外包路径，则该路径下的controller都不再处理
         List<String> excludePackages = properties.getExcludePackages();
         if (!CollectionUtils.isEmpty(excludePackages)) {
@@ -105,7 +128,7 @@ public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         }
 
         //配置了例外的返回类型，则不处理
-        Set<Class> excludeReturnTypes = properties.getExcludeReturnTypes();
+        Set<Class<?>> excludeReturnTypes = properties.getExcludeReturnTypes();
         if (!CollectionUtils.isEmpty(excludeReturnTypes)
                 && excludeReturnTypes.contains(method.getReturnType())) {
             logger.debug("Graceful Response:匹配到excludeReturnTypes例外配置，跳过:returnType={},", method.getReturnType());
@@ -128,31 +151,5 @@ public class GrNotVoidResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
         logger.debug("Graceful Response:非空返回值，需要进行封装");
         return true;
-    }
-
-    @Override
-    public Object beforeBodyWrite(Object body,
-                                  MethodParameter methodParameter,
-                                  MediaType mediaType,
-                                  Class<? extends HttpMessageConverter<?>> clazz,
-                                  ServerHttpRequest serverHttpRequest,
-                                  ServerHttpResponse serverHttpResponse) {
-        if (body == null) {
-            return responseFactory.newSuccessInstance();
-        } else if (body instanceof Response) {
-            return body;
-        } else {
-            if (logger.isDebugEnabled()) {
-                String path = serverHttpRequest.getURI().getPath();
-                logger.debug("Graceful Response:非空返回值，执行封装:path={}", path);
-            }
-            return responseFactory.newSuccessInstance(body);
-        }
-    }
-
-    public static void main(String[] args) {
-        AntPathMatcher matcher = new AntPathMatcher();
-        boolean match = matcher.match("/**/b/**", "/a/b/c/");
-        System.out.println(match);
     }
 }

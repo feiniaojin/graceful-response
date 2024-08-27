@@ -8,6 +8,7 @@ import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
 
 /**
  * Advice的工具类
+ * @author qinyujie
  */
 public class AdviceSupport {
 
@@ -25,6 +26,5 @@ public class AdviceSupport {
                 || AbstractJackson2HttpMessageConverter.class.isAssignableFrom(clazz)
                 || clazz.getName().equals(properties.getJsonHttpMessageConverter());
     }
-
 
 }

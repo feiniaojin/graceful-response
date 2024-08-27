@@ -1,6 +1,7 @@
 package com.feiniaojin.gracefulresponse.defaults;
 
 
+import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
@@ -37,7 +38,6 @@ public class DefaultResponseFactory implements ResponseFactory {
     public Response newEmptyInstance() {
         try {
             String responseClassFullName = properties.getResponseClassFullName();
-
             //配置了Response的全限定名，即自定义了Response，用配置的进行返回
             if (StringUtils.hasLength(responseClassFullName)) {
                 Object newInstance = Class.forName(responseClassFullName).getConstructor().newInstance();
@@ -47,13 +47,17 @@ public class DefaultResponseFactory implements ResponseFactory {
                 return generateDefaultResponse();
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new GracefulResponseException("创建空的Response失败", e);
         }
     }
 
     private Response generateDefaultResponse() {
         Integer responseStyle = properties.getResponseStyle();
-        if (Objects.isNull(responseStyle) || RESPONSE_STYLE_0.equals(responseStyle)) {
+        //默认的Response style，5.0以上是Style0，5.0（包括5.0）之后是Style1
+        if (Objects.isNull(responseStyle)) {
+            return new DefaultResponseImplStyle1();
+        }
+        if (RESPONSE_STYLE_0.equals(responseStyle)) {
             return new DefaultResponseImplStyle0();
         } else if (RESPONSE_STYLE_1.equals(responseStyle)) {
             return new DefaultResponseImplStyle1();
@@ -70,7 +74,8 @@ public class DefaultResponseFactory implements ResponseFactory {
         return bean;
     }
 
-    @Override public Response newInstance(ResponseStatus statusLine,Object data){
+    @Override
+    public Response newInstance(ResponseStatus statusLine, Object data) {
         Response bean = this.newInstance(statusLine);
         bean.setPayload(data);
         return bean;

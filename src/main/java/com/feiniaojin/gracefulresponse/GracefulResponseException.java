@@ -62,4 +62,12 @@ public class GracefulResponseException extends RuntimeException {
     public String getMsg() {
         return msg;
     }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 }
