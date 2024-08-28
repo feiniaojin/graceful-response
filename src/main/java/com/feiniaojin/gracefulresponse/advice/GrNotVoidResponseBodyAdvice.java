@@ -139,11 +139,11 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
         if (!CollectionUtils.isEmpty(excludeUrls)) {
             RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-            String requestURI = request.getRequestURI();
+            String requestUri = request.getRequestURI();
             for (String excludeUrl : excludeUrls) {
-                if (ANT_PATH_MATCHER.match(excludeUrl, requestURI)) {
+                if (ANT_PATH_MATCHER.match(excludeUrl, requestUri)) {
                     logger.debug("Graceful Response:匹配到excludeUrls例外配置，跳过:excludeUrl={},requestURI={}",
-                            excludeUrl, requestURI);
+                            excludeUrl, requestUri);
                     return false;
                 }
             }

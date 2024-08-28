@@ -9,5 +9,10 @@ import org.springframework.http.ResponseEntity;
  * @author qinyujie
  */
 public interface RejectStrategy {
+    /**
+     *
+     * @param throwable
+     * @return
+     */
     ResponseEntity<Response> call(Throwable throwable);
 }

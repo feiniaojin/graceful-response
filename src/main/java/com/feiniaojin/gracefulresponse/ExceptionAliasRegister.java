@@ -26,7 +26,7 @@ public class ExceptionAliasRegister {
         ExceptionAliasFor exceptionAliasFor = throwableClass.getAnnotation(ExceptionAliasFor.class);
         if (exceptionAliasFor == null) {
             logger.error("注册了未加ExceptionAliasFor的异常,throwableClass={}", throwableClass);
-            throw new RuntimeException();
+            throw new GracefulResponseException();
         }
 
         Class<? extends Throwable>[] classes = exceptionAliasFor.aliasFor();

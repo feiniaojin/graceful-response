@@ -149,7 +149,7 @@ public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice imple
             //取ResponseStatus注解中的状态码
             httpStatusCode = httpResponseStatus.value();
         } else {
-            //优先取异常别名
+            //优先取配置文件的异常别名
             Map<Class<?>, ExceptionAliasConfig> exceptionAliasConfigMap = properties.getExceptionAliasConfigMap();
             Class<? extends Throwable> aClass = throwable.getClass();
             if (!CollectionUtils.isEmpty(exceptionAliasConfigMap)
@@ -157,9 +157,16 @@ public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice imple
                     && Objects.nonNull(exceptionAliasConfigMap.get(aClass).getHttpStatusCode())) {
                 httpStatusCode = HttpStatusCode.valueOf(exceptionAliasConfigMap.get(aClass).getHttpStatusCode());
             } else {
-                //取用户配置的默认错误码
-                Integer defaultHttpStatusCodeOnError = properties.getDefaultHttpStatusCodeOnError();
-                httpStatusCode = HttpStatusCode.valueOf(defaultHttpStatusCodeOnError);
+                //取代码中注册的异常别名
+                ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(throwable.getClass());
+                if (exceptionAliasFor != null
+                        && exceptionAliasFor.httpStatusCode() > 0) {
+                    httpStatusCode = HttpStatusCode.valueOf(exceptionAliasFor.httpStatusCode());
+                } else {
+                    //取用户配置的默认错误码
+                    Integer defaultHttpStatusCodeOnError = properties.getDefaultHttpStatusCodeOnError();
+                    httpStatusCode = HttpStatusCode.valueOf(defaultHttpStatusCodeOnError);
+                }
             }
         }
         return new ResponseEntity<>(response, httpStatusCode);

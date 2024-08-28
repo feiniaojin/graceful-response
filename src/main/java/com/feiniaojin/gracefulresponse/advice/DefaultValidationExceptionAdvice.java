@@ -61,6 +61,8 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
 
     private static final String VALIDATION_STATUS_CODE = "ValidationStatusCode";
 
+    private static final String PACKAGE_SEP = ".";
+
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
@@ -174,7 +176,7 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
             return null;
         }
         //不包含.，说明直接是根路径
-        if (!fieldName.contains(".")) {
+        if (!fieldName.contains(PACKAGE_SEP)) {
             clazz = target.getClass();
         } else {
             String fieldParentPath = fieldParentPath(fieldName);

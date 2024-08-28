@@ -6,5 +6,11 @@ package com.feiniaojin.gracefulresponse.advice.lifecycle.exception;
  * @author qinyujie
  */
 public interface BeforeControllerAdviceProcess {
+
+    /**
+     * ControllerAdvice处理前的回调
+     *
+     * @param throwable
+     */
     void call(Throwable throwable);
 }

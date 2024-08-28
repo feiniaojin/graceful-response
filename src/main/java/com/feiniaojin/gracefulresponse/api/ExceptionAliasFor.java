@@ -37,4 +37,6 @@ public @interface ExceptionAliasFor {
      * @return
      */
     Class<? extends Throwable>[] aliasFor();
+
+    int httpStatusCode() default -1;
 }
