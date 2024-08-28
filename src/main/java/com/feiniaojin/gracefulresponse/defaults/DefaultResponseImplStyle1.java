@@ -34,7 +34,7 @@ public class DefaultResponseImplStyle1 implements Response {
     @Override
     @JsonIgnore
     public Object getPayload() {
-        return null;
+        return this.data;
     }
 
     public String getCode() {
