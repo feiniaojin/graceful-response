@@ -151,6 +151,8 @@ public class AutoConfig {
         advice.setRejectStrategy(new DefaultRejectStrategyImpl());
         advice.setControllerAdviceProcessor(advice);
         advice.setBeforeControllerAdviceProcess(beforeControllerAdviceProcess);
+        // 设置默认参数校验异常http处理器
+        advice.setControllerAdviceHttpProcessor(advice);
         return advice;
     }
 }
