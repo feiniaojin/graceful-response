@@ -8,5 +8,11 @@ import com.feiniaojin.gracefulresponse.data.Response;
  * @author qinyujie
  */
 public interface AfterControllerAdviceProcess {
+    /**
+     * 执行处理逻辑之后的回调
+     *
+     * @param response
+     * @param throwable
+     */
     void call(Response response, Throwable throwable);
 }

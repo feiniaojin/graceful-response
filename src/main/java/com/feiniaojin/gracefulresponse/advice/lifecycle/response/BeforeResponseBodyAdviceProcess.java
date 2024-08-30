@@ -12,6 +12,16 @@ import org.springframework.http.server.ServerHttpResponse;
  * @author qinyujie
  */
 public interface BeforeResponseBodyAdviceProcess {
+    /**
+     * 处理前的回调
+     *
+     * @param body
+     * @param returnType
+     * @param selectedContentType
+     * @param selectedConverterType
+     * @param request
+     * @param response
+     */
     void call(Object body,
               MethodParameter returnType,
               MediaType selectedContentType,

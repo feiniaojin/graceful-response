@@ -7,6 +7,10 @@ package com.feiniaojin.gracefulresponse.defaults;
  */
 public class DefaultConstants {
 
+    private DefaultConstants(){
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * 默认的成功响应码
      */

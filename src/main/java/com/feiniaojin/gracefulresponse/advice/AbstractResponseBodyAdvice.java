@@ -12,6 +12,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -25,7 +26,7 @@ public abstract class AbstractResponseBodyAdvice implements ResponseBodyAdvice<O
     /**
      * 执行处理之前的判断，只有所有的判断都生效，才会进行异常处理
      */
-    private CopyOnWriteArrayList<ResponseBodyAdvicePredicate> predicates = new CopyOnWriteArrayList<>();
+    private List<ResponseBodyAdvicePredicate> predicates = new CopyOnWriteArrayList<>();
 
     private RejectStrategy rejectStrategy = new DefaultRejectStrategyImpl();
 
@@ -39,7 +40,7 @@ public abstract class AbstractResponseBodyAdvice implements ResponseBodyAdvice<O
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         //默认认为只要捕获到的，都要进行处理
         boolean hit = true;
-        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> pList = this.predicates;
+        List<ResponseBodyAdvicePredicate> pList = this.predicates;
         for (ResponseBodyAdvicePredicate predicateBeforeHandle : pList) {
             if (!predicateBeforeHandle.test(returnType, converterType)) {
                 hit = false;
@@ -75,11 +76,11 @@ public abstract class AbstractResponseBodyAdvice implements ResponseBodyAdvice<O
         return body;
     }
 
-    public CopyOnWriteArrayList<ResponseBodyAdvicePredicate> getPredicates() {
+    public List<ResponseBodyAdvicePredicate> getPredicates() {
         return predicates;
     }
 
-    public void setPredicates(CopyOnWriteArrayList<ResponseBodyAdvicePredicate> predicates) {
+    public void setPredicates(List<ResponseBodyAdvicePredicate> predicates) {
         this.predicates = predicates;
     }
 

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
  */
 public interface RejectStrategy {
     /**
+     * 拒绝策略
      *
      * @param throwable
      * @return

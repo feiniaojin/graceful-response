@@ -12,6 +12,10 @@ public abstract class AbstractExceptionAliasRegisterConfig implements Applicatio
 
     private final Logger logger = LoggerFactory.getLogger(AbstractExceptionAliasRegisterConfig.class);
 
+    /**
+     * 注册异常别名
+     * @param register
+     */
     protected abstract void registerAlias(ExceptionAliasRegister register);
 
     @Override

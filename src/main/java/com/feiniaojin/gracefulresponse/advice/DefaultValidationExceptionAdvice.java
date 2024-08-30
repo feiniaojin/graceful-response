@@ -102,12 +102,6 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
         return super.exceptionHandler(throwable);
     }
 
-    @Override
-    public boolean test(Throwable throwable) {
-        return true;
-    }
-
-
     /**
      * Controller方法的参数校验码
      * Controller方法>Controller类>DTO入参属性>DTO入参属性所在类>DTO入参根类>配置文件默认参数码>默认错误码
@@ -182,11 +176,16 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
             String fieldParentPath = fieldParentPath(fieldName);
             fieldName = fieldSimpleName(fieldName);
             Expression expression = PARSER.parseExpression(fieldParentPath);
-            clazz = expression.getValue(target).getClass();
+            Object object = expression.getValue(target);
+            if (Objects.isNull(object)) {
+                throw new GracefulResponseException();
+            }
+            clazz = object.getClass();
         }
         try {
             field = clazz.getDeclaredField(fieldName);
         } catch (Exception exception) {
+            logger.error("无法根据属性名找到对应的属性,fieldName={}", fieldName);
             throw new GracefulResponseException("获得校验不通过的属性失败,fieldName={}", fieldName, exception);
         }
 
@@ -203,7 +202,7 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
         }
 
         //根类上找注解
-        if (target != null && target.getClass() != clazz) {
+        if (target.getClass() != clazz) {
             validateStatusCode = target.getClass().getAnnotation(ValidationStatusCode.class);
             if (Objects.nonNull(validateStatusCode)) {
                 return validateStatusCode;

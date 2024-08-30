@@ -32,12 +32,6 @@ public class GracefulResponseException extends RuntimeException {
         this.msg = msg;
     }
 
-    public GracefulResponseException(ResponseStatus responseStatus, String msg) {
-        super(msg);
-        this.code = responseStatus.getCode();
-        this.msg = responseStatus.getMsg();
-    }
-
     public GracefulResponseException(String msg, Throwable cause) {
         super(msg, cause);
         this.msg = msg;

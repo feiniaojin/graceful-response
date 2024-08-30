@@ -10,6 +10,10 @@ import com.feiniaojin.gracefulresponse.data.ResponseStatus;
  */
 public class GracefulResponse {
 
+    private GracefulResponse(){
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * 需要抛自定义异常时，调用该方法
      *

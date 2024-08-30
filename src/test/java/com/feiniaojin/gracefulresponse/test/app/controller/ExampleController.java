@@ -78,7 +78,7 @@ public class ExampleController {
     @RequestMapping("/get")
     @ResponseBody
     public UserInfoView get(Long id) {
-        logger.info("id=" + id);
+        logger.info("id={}", id);
         UserInfoView view = new UserInfoView();
         view.setId(1L);
         view.setName("name" + id);
@@ -157,7 +157,7 @@ public class ExampleController {
     @ValidationStatusCode(code = "1314")
     public void validateMethodParam(@RequestParam(name = "userId", required = false) @NotNull(message = "userId不能为空") Long userId,
                                     @RequestParam(name = "userName", required = false) @NotNull(message = "userName不能为空") Long userName) {
-        logger.info("" + userId);
+        logger.info("userId={}", userId);
     }
 
     /**
@@ -170,7 +170,7 @@ public class ExampleController {
     @RequestMapping(value = "/methodPost", method = RequestMethod.POST)
     @ResponseBody
     public void testMethodNotSupport(Long userId) {
-        logger.info("" + userId);
+        logger.info("userId={}", userId);
 
     }
 

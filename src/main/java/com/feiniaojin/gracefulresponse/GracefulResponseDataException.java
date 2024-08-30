@@ -1,16 +1,11 @@
 package com.feiniaojin.gracefulresponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 带数据的异常响应
  *
  * @author twolf
  */
 public class GracefulResponseDataException extends GracefulResponseException {
-
-    private final Logger logger = LoggerFactory.getLogger(GracefulResponseDataException.class);
 
     /**
      * 响应数据

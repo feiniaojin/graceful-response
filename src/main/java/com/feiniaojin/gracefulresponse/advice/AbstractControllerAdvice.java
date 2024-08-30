@@ -4,6 +4,7 @@ import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.*;
 import com.feiniaojin.gracefulresponse.data.Response;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -17,7 +18,7 @@ public abstract class AbstractControllerAdvice {
     /**
      * 执行处理之前的判断，只有所有的判断都生效，才会进行异常处理
      */
-    private CopyOnWriteArrayList<ControllerAdvicePredicate> predicates = new CopyOnWriteArrayList<>();
+    private List<ControllerAdvicePredicate> predicates = new CopyOnWriteArrayList<>();
 
     private RejectStrategy rejectStrategy = new DefaultRejectStrategyImpl();
 
@@ -32,7 +33,7 @@ public abstract class AbstractControllerAdvice {
     public ResponseEntity<Response> exceptionHandler(Throwable throwable) {
         //默认认为只要捕获到的，都要进行处理
         boolean hit = true;
-        CopyOnWriteArrayList<ControllerAdvicePredicate> pList = this.predicates;
+        List<ControllerAdvicePredicate> pList = this.predicates;
         for (ControllerAdvicePredicate predicateBeforeHandle : pList) {
             if (!predicateBeforeHandle.test(throwable)) {
                 hit = false;
@@ -59,16 +60,14 @@ public abstract class AbstractControllerAdvice {
         }
 
         //HTTP的处理收敛到这里，处理HTTP 状态码、Header
-        ResponseEntity<Response> responseEntity = controllerAdviceHttpProcessor.process(response, throwable);
-
-        return responseEntity;
+        return controllerAdviceHttpProcessor.process(response, throwable);
     }
 
-    public CopyOnWriteArrayList<ControllerAdvicePredicate> getPredicates() {
+    public List<ControllerAdvicePredicate> getPredicates() {
         return predicates;
     }
 
-    public void setPredicates(CopyOnWriteArrayList<ControllerAdvicePredicate> predicates) {
+    public void setPredicates(List<ControllerAdvicePredicate> predicates) {
         this.predicates = predicates;
     }
 
@@ -86,10 +85,6 @@ public abstract class AbstractControllerAdvice {
 
     public void setRejectStrategy(RejectStrategy rejectStrategy) {
         this.rejectStrategy = rejectStrategy;
-    }
-
-    public BeforeControllerAdviceProcess getBeforeAdviceProcess() {
-        return beforeControllerAdviceProcess;
     }
 
     public void setBeforeControllerAdviceProcess(BeforeControllerAdviceProcess beforeControllerAdviceProcess) {

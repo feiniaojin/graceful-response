@@ -56,13 +56,6 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
      */
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
-    public static void main(String[] args) {
-        AntPathMatcher matcher = new AntPathMatcher();
-//        boolean match = matcher.match("/**/b/**", "/a/b/c/");
-        boolean match = matcher.match("*.feiniaojin.*", "com.feiniaojin.ddd");
-        System.out.println(match);
-    }
-
     @Override
     public Object process(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body == null) {
@@ -92,27 +85,8 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
             return false;
         }
 
-        //有ExcludeFromGracefulResponse注解修饰的，也跳过
-        if (method.isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Graceful Response:方法被@ExcludeFromGracefulResponse注解修饰，跳过:methodName={}", method.getName());
-            }
-            return false;
-        }
-
-        //有ExcludeFromGracefulResponse注解修饰的类，也跳过
-        if (method.getDeclaringClass().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Graceful Response:类被@ExcludeFromGracefulResponse注解修饰，跳过:methodName={}", method.getName());
-            }
-            return false;
-        }
-
-        //有ExcludeFromGracefulResponse注解修饰的返回类型，也跳过
-        if (method.getReturnType().isAnnotationPresent(ExcludeFromGracefulResponse.class)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Graceful Response:返回类型被@ExcludeFromGracefulResponse注解修饰，跳过:methodName={}", method.getName());
-            }
+        //命中@ExcludeFromGracefulResponse注解，返回false，不处理
+        if (adviceSupport.matchExcludeFromGracefulResponse(method)) {
             return false;
         }
 
