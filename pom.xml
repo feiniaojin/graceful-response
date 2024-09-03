@@ -100,10 +100,6 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>junit-jupiter-api</artifactId>
-                    <groupId>org.junit.jupiter</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>hamcrest</artifactId>
                     <groupId>org.hamcrest</groupId>
                 </exclusion>
