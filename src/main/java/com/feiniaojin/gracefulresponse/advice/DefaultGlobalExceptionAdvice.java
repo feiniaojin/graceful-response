@@ -23,6 +23,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.HandlerMethod;
 
 import java.util.Map;
@@ -118,8 +120,16 @@ public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice imple
 
     @Override
     public boolean shouldApplyTo(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
-        //不符合放行规则的才需要处理
-        return !adviceSupport.isMatchExcludeException(exception);
+
+        if (adviceSupport.isMatchExcludeException(exception)) {
+            //符合放行规则，在放行之前记录一下，方便ResponseBodyAdvice处理
+            RequestContextHolder.currentRequestAttributes()
+                    .setAttribute(ReleaseExceptionHandlerExceptionResolver.RELEASE_EXCEPTION_KEY,
+                            exception, RequestAttributes.SCOPE_REQUEST);
+            //放行不处理，false
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class DefaultRejectStrategyImpl implements RejectStrategy {
     private ApplicationContext applicationContext;
 
     @Resource
-    private ContinuedExceptionHandlerExceptionResolver continuedExceptionHandlerExceptionResolver;
+    private ReleaseExceptionHandlerExceptionResolver releaseExceptionHandlerExceptionResolver;
 
     @Override
     public Object call(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
@@ -50,7 +50,7 @@ public class DefaultRejectStrategyImpl implements RejectStrategy {
             if (!set.isEmpty()) {
                 Optional<HandlerMethod> handlerMethod = findHandlerMethod(exception);
                 if (handlerMethod.isPresent()) {
-                    return continuedExceptionHandlerExceptionResolver.doResolveHandlerMethodException(request, response, handlerMethod.get(), exception);
+                    return releaseExceptionHandlerExceptionResolver.doResolveHandlerMethodException(request, response, handlerMethod.get(), exception);
                 }
             }
         }

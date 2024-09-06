@@ -169,7 +169,7 @@ public class AutoConfig {
     }
 
     @Bean
-    public ExceptionHandlerExceptionResolver continuedExceptionHandlerExceptionResolver() {
-        return new ContinuedExceptionHandlerExceptionResolver();
+    public ExceptionHandlerExceptionResolver releaseExceptionHandlerExceptionResolver() {
+        return new ReleaseExceptionHandlerExceptionResolver();
     }
 }

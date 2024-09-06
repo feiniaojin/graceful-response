@@ -16,13 +16,12 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.ControllerAdviceBean;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
+import org.springframework.web.method.annotation.MapMethodProcessor;
+import org.springframework.web.method.annotation.ModelMethodProcessor;
 import org.springframework.web.method.support.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
+import org.springframework.web.servlet.mvc.method.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.DisconnectedClientHelper;
@@ -33,10 +32,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 释放异常的ExceptionHandlerExceptionResolver
  * @author qinyujie
  */
-public class ContinuedExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver
+public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver
         implements ApplicationContextAware, InitializingBean {
+
+    public static final String RELEASE_EXCEPTION_KEY = "RELEASE_EXCEPTION_KEY";
 
     private final List<Object> responseBodyAdvice = new ArrayList<>();
 
@@ -124,8 +126,32 @@ public class ContinuedExceptionHandlerExceptionResolver extends ExceptionHandler
     protected List<HandlerMethodReturnValueHandler> getDefaultReturnValueHandlers() {
         List<HandlerMethodReturnValueHandler> handlers = new ArrayList<>();
 
-        handlers.add(new ContinuedMessageConverterMethodProcessor(
+        // Single-purpose return value types
+        handlers.add(new ModelAndViewMethodReturnValueHandler());
+        handlers.add(new ModelMethodProcessor());
+        handlers.add(new ViewMethodReturnValueHandler());
+        handlers.add(new HttpEntityMethodProcessor(
                 getMessageConverters(), this.contentNegotiationManager, this.responseBodyAdvice));
+
+        // Annotation-based return value types
+        handlers.add(new ServletModelAttributeMethodProcessor(false));
+        handlers.add(new RequestResponseBodyMethodProcessor(
+                getMessageConverters(), this.contentNegotiationManager, this.responseBodyAdvice));
+
+        // Multi-purpose return value types
+        handlers.add(new ViewNameMethodReturnValueHandler());
+        handlers.add(new MapMethodProcessor());
+
+        // Custom return value types
+        if (getCustomReturnValueHandlers() != null) {
+            handlers.addAll(getCustomReturnValueHandlers());
+        }
+
+        handlers.add(new ReleaseMessageConverterMethodProcessor(
+                getMessageConverters(), this.contentNegotiationManager, this.responseBodyAdvice));
+
+        // Catch-all
+        handlers.add(new ServletModelAttributeMethodProcessor(true));
 
         return handlers;
     }

@@ -15,21 +15,21 @@ import java.util.List;
  *
  * @author qinyujie
  */
-public class ContinuedMessageConverterMethodProcessor extends HttpEntityMethodProcessor {
+public class ReleaseMessageConverterMethodProcessor extends HttpEntityMethodProcessor {
 
-    public ContinuedMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters) {
+    public ReleaseMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters) {
         super(converters);
     }
 
-    public ContinuedMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters, ContentNegotiationManager manager) {
+    public ReleaseMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters, ContentNegotiationManager manager) {
         super(converters, manager);
     }
 
-    public ContinuedMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters, List<Object> requestResponseBodyAdvice) {
+    public ReleaseMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters, List<Object> requestResponseBodyAdvice) {
         super(converters, requestResponseBodyAdvice);
     }
 
-    public ContinuedMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters, ContentNegotiationManager manager, List<Object> requestResponseBodyAdvice) {
+    public ReleaseMessageConverterMethodProcessor(List<HttpMessageConverter<?>> converters, ContentNegotiationManager manager, List<Object> requestResponseBodyAdvice) {
         super(converters, manager, requestResponseBodyAdvice);
     }
 

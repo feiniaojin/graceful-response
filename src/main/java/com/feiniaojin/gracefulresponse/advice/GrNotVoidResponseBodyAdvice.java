@@ -122,6 +122,14 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
             }
         }
 
+        //配置了异常放行，就不会再封装了
+        Exception releaseException = (Exception) RequestContextHolder.getRequestAttributes().getAttribute(ReleaseExceptionHandlerExceptionResolver.RELEASE_EXCEPTION_KEY,
+                RequestAttributes.SCOPE_REQUEST);
+        if (Objects.nonNull(releaseException)
+                && adviceSupport.isMatchExcludeException(releaseException)) {
+            return false;
+        }
+
         logger.debug("Graceful Response:非空返回值，需要进行封装");
         return true;
     }
