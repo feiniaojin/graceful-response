@@ -7,7 +7,7 @@ package com.feiniaojin.gracefulresponse.defaults;
  */
 public class DefaultConstants {
 
-    private DefaultConstants(){
+    private DefaultConstants() {
         throw new IllegalStateException("Utility class");
     }
 

@@ -71,7 +71,7 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
     }
 
     @Override
-    public boolean test(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
+    public boolean shouldApplyTo(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
 
         Method method = methodParameter.getMethod();
 

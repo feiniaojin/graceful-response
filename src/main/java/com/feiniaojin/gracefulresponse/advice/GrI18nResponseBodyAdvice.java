@@ -52,7 +52,7 @@ public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice impleme
     }
 
     @Override
-    public boolean test(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
+    public boolean shouldApplyTo(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
         return properties.getI18n();
     }
 }

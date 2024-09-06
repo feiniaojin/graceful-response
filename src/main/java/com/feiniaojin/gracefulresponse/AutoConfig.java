@@ -4,6 +4,7 @@ package com.feiniaojin.gracefulresponse;
 import com.feiniaojin.gracefulresponse.advice.*;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.BeforeControllerAdviceProcess;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.ControllerAdvicePredicate;
+import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.RejectStrategy;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
@@ -15,7 +16,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -113,9 +116,10 @@ public class AutoConfig {
     }
 
     @Bean
-    public FrameworkExceptionAdvice frameworkExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess) {
+    public FrameworkExceptionAdvice frameworkExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess,
+                                                             @Lazy RejectStrategy rejectStrategy) {
         FrameworkExceptionAdvice frameworkExceptionAdvice = new FrameworkExceptionAdvice();
-        frameworkExceptionAdvice.setRejectStrategy(new DefaultRejectStrategyImpl());
+        frameworkExceptionAdvice.setRejectStrategy(rejectStrategy);
         frameworkExceptionAdvice.setControllerAdviceProcessor(frameworkExceptionAdvice);
         frameworkExceptionAdvice.setBeforeControllerAdviceProcess(beforeControllerAdviceProcess);
         frameworkExceptionAdvice.setControllerAdviceHttpProcessor(frameworkExceptionAdvice);
@@ -123,9 +127,10 @@ public class AutoConfig {
     }
 
     @Bean
-    public DataExceptionAdvice dataExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess) {
+    public DataExceptionAdvice dataExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess,
+                                                   @Lazy RejectStrategy rejectStrategy) {
         DataExceptionAdvice dataExceptionAdvice = new DataExceptionAdvice();
-        dataExceptionAdvice.setRejectStrategy(new DefaultRejectStrategyImpl());
+        dataExceptionAdvice.setRejectStrategy(rejectStrategy);
         dataExceptionAdvice.setControllerAdviceProcessor(dataExceptionAdvice);
         dataExceptionAdvice.setBeforeControllerAdviceProcess(beforeControllerAdviceProcess);
         dataExceptionAdvice.setControllerAdviceHttpProcessor(dataExceptionAdvice);
@@ -133,9 +138,10 @@ public class AutoConfig {
     }
 
     @Bean
-    public DefaultGlobalExceptionAdvice defaultGlobalExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess) {
+    public DefaultGlobalExceptionAdvice defaultGlobalExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess,
+                                                                     @Lazy RejectStrategy rejectStrategy) {
         DefaultGlobalExceptionAdvice advice = new DefaultGlobalExceptionAdvice();
-        advice.setRejectStrategy(new DefaultRejectStrategyImpl());
+        advice.setRejectStrategy(rejectStrategy);
         CopyOnWriteArrayList<ControllerAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
         copyOnWriteArrayList.add(advice);
         advice.setPredicates(copyOnWriteArrayList);
@@ -146,13 +152,24 @@ public class AutoConfig {
     }
 
     @Bean
-    public DefaultValidationExceptionAdvice defaultValidationExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess) {
+    public DefaultValidationExceptionAdvice defaultValidationExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess,
+                                                                             @Lazy RejectStrategy rejectStrategy) {
         DefaultValidationExceptionAdvice advice = new DefaultValidationExceptionAdvice();
-        advice.setRejectStrategy(new DefaultRejectStrategyImpl());
+        advice.setRejectStrategy(rejectStrategy);
         advice.setControllerAdviceProcessor(advice);
         advice.setBeforeControllerAdviceProcess(beforeControllerAdviceProcess);
         // 设置默认参数校验异常http处理器
         advice.setControllerAdviceHttpProcessor(advice);
         return advice;
+    }
+
+    @Bean
+    public RejectStrategy rejectStrategy() {
+        return new DefaultRejectStrategyImpl();
+    }
+
+    @Bean
+    public ExceptionHandlerExceptionResolver continuedExceptionHandlerExceptionResolver() {
+        return new ContinuedExceptionHandlerExceptionResolver();
     }
 }

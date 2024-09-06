@@ -2,7 +2,10 @@ package com.feiniaojin.gracefulresponse.advice;
 
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.*;
 import com.feiniaojin.gracefulresponse.data.Response;
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.Nullable;
+import org.springframework.web.method.HandlerMethod;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +23,7 @@ public abstract class AbstractControllerAdvice {
      */
     private List<ControllerAdvicePredicate> predicates = new CopyOnWriteArrayList<>();
 
-    private RejectStrategy rejectStrategy = new DefaultRejectStrategyImpl();
+    private RejectStrategy rejectStrategy;
 
     private BeforeControllerAdviceProcess beforeControllerAdviceProcess;
 
@@ -30,12 +33,12 @@ public abstract class AbstractControllerAdvice {
 
     private ControllerAdviceHttpProcessor controllerAdviceHttpProcessor;
 
-    public ResponseEntity<Response> exceptionHandler(Throwable throwable) {
+    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
         //默认认为只要捕获到的，都要进行处理
         boolean hit = true;
         List<ControllerAdvicePredicate> pList = this.predicates;
         for (ControllerAdvicePredicate predicateBeforeHandle : pList) {
-            if (!predicateBeforeHandle.test(throwable)) {
+            if (!predicateBeforeHandle.shouldApplyTo(request, response, handler, exception)) {
                 hit = false;
                 break;
             }
@@ -43,24 +46,24 @@ public abstract class AbstractControllerAdvice {
 
         //不需要处理，由RejectHandler决定该如何解决，默认为往后抛
         if (!hit) {
-            return rejectStrategy.call(throwable);
+            return rejectStrategy.call(request, response, handler, exception);
         }
 
         //执行之前做一下进行回调，可以用于执行前的日志打印
         if (Objects.nonNull(beforeControllerAdviceProcess)) {
-            beforeControllerAdviceProcess.call(throwable);
+            beforeControllerAdviceProcess.call(request, response, handler, exception);
         }
 
         //处理异常，加工出来Response
-        Response response = controllerAdviceProcessor.process(throwable);
+        Response grResponse = controllerAdviceProcessor.process(request, response, handler, exception);
 
         //得到Response后的处理，可能需要打印日志
         if (Objects.nonNull(afterControllerAdviceProcess)) {
-            afterControllerAdviceProcess.call(response, throwable);
+            afterControllerAdviceProcess.call(grResponse, exception);
         }
 
         //HTTP的处理收敛到这里，处理HTTP 状态码、Header
-        return controllerAdviceHttpProcessor.process(response, throwable);
+        return controllerAdviceHttpProcessor.process(grResponse, exception);
     }
 
     public List<ControllerAdvicePredicate> getPredicates() {

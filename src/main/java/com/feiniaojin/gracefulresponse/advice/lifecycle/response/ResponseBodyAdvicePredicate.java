@@ -17,7 +17,7 @@ public interface ResponseBodyAdvicePredicate {
      * @param clazz
      * @return
      */
-    default boolean test(MethodParameter methodParameter,
+    default boolean shouldApplyTo(MethodParameter methodParameter,
                          Class<? extends HttpMessageConverter<?>> clazz) {
         return true;
     }

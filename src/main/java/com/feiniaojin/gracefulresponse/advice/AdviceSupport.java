@@ -8,8 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Advice的工具类
@@ -19,6 +24,8 @@ import java.lang.reflect.Method;
 public class AdviceSupport {
 
     private final Logger logger = LoggerFactory.getLogger(AdviceSupport.class);
+
+    private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
     @Resource
     private GracefulResponseProperties properties;
@@ -61,6 +68,43 @@ public class AdviceSupport {
             return true;
         }
         //未命中，返回false
+        return false;
+    }
+
+    /**
+     * 是否匹配被放行注解
+     *
+     * @param throwable
+     * @return
+     */
+    public boolean isMatchExcludeException(Throwable throwable) {
+
+        //是否匹配异常类型
+        Class<? extends Throwable> aClass = throwable.getClass();
+        Set<Class<?>> excludeExceptionTypes = properties.getExcludeExceptionTypes();
+        if (!CollectionUtils.isEmpty(excludeExceptionTypes)) {
+            //直接包含某个异常，匹配
+            if (excludeExceptionTypes.contains(aClass)) {
+                return true;
+            }
+            //当前异常是否是某个配置异常的子类
+            Optional<Class<?>> classOptional = excludeExceptionTypes.stream()
+                    .filter(eClass -> eClass.isAssignableFrom(aClass)).findFirst();
+            if (classOptional.isPresent()) {
+                return true;
+            }
+        }
+
+        //根据异常的包路径放行
+        String packageName = aClass.getPackageName();
+        List<String> excludeExceptionPackages = properties.getExcludeExceptionPackages();
+        if (!CollectionUtils.isEmpty(excludeExceptionPackages)) {
+            for (String str : excludeExceptionPackages) {
+                if (ANT_PATH_MATCHER.match(str, packageName)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }

@@ -13,19 +13,20 @@ import com.feiniaojin.gracefulresponse.data.ExceptionAliasConfig;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.AntPathMatcher;
+import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.HandlerMethod;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * 默认的全局异常处理
@@ -36,8 +37,6 @@ import java.util.Set;
 @ControllerAdvice
 public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice implements ControllerAdvicePredicate,
         ControllerAdviceProcessor, ControllerAdviceHttpProcessor {
-
-    private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
     @Resource
     private ExceptionAliasRegister exceptionAliasRegister;
@@ -51,9 +50,12 @@ public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice imple
     @Resource
     private ResponseStatusFactory responseStatusFactory;
 
+    @Resource
+    private AdviceSupport adviceSupport;
+
     @Override
-    public Response process(Throwable throwable) {
-        ResponseStatus statusLine = fromExceptionInstance(throwable);
+    public Response process(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
+        ResponseStatus statusLine = fromExceptionInstance(exception);
         return responseFactory.newInstance(statusLine);
     }
 
@@ -110,32 +112,14 @@ public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice imple
 
     @Override
     @ExceptionHandler(value = Throwable.class)
-    public ResponseEntity<Response> exceptionHandler(Throwable throwable) {
-        return super.exceptionHandler(throwable);
+    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
+        return super.exceptionHandler(request, response, handler, exception);
     }
 
     @Override
-    public boolean test(Throwable throwable) {
-
-        //根据异常来放行
-        Class<? extends Throwable> aClass = throwable.getClass();
-        Set<Class<?>> excludeExceptionTypes = properties.getExcludeExceptionTypes();
-        if (!CollectionUtils.isEmpty(excludeExceptionTypes) && excludeExceptionTypes.contains(aClass)) {
-            return false;
-        }
-
-        //根据异常的包路径放行
-        String packageName = aClass.getPackageName();
-        List<String> excludeExceptionPackages = properties.getExcludeExceptionPackages();
-        if (!CollectionUtils.isEmpty(excludeExceptionPackages)) {
-            for (String str : excludeExceptionPackages) {
-                if (ANT_PATH_MATCHER.match(str, packageName)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+    public boolean shouldApplyTo(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
+        //不符合放行规则的才需要处理
+        return !adviceSupport.isMatchExcludeException(exception);
     }
 
     @Override

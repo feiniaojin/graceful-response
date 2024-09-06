@@ -11,10 +11,13 @@ import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.HandlerMethod;
 
 /**
  * 处理GracefulResponseDataException的异常
@@ -37,8 +40,8 @@ public class DataExceptionAdvice extends AbstractControllerAdvice
     private ResponseStatusFactory responseStatusFactory;
 
     @Override
-    public Response process(Throwable throwable) {
-        if (throwable instanceof GracefulResponseDataException dataException) {
+    public Response process(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
+        if (exception instanceof GracefulResponseDataException dataException) {
             ResponseStatus statusLine = fromGracefulResponseExceptionInstance(dataException);
             return responseFactory.newInstance(statusLine, dataException.getData());
         }
@@ -55,13 +58,13 @@ public class DataExceptionAdvice extends AbstractControllerAdvice
 
     @Override
     @ExceptionHandler(value = GracefulResponseDataException.class)
-    public ResponseEntity<Response> exceptionHandler(Throwable throwable) {
-        return super.exceptionHandler(throwable);
+    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
+        return super.exceptionHandler(request, response, handler, exception);
     }
 
     @Override
-    public boolean test(Throwable throwable) {
-        return throwable instanceof GracefulResponseDataException;
+    public boolean shouldApplyTo(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
+        return exception instanceof GracefulResponseDataException;
     }
 }
 

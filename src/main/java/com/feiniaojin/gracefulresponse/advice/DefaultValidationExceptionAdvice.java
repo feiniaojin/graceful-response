@@ -11,6 +11,8 @@ import com.feiniaojin.gracefulresponse.api.ValidationStatusCode;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
@@ -24,6 +26,7 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -78,28 +81,28 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
     private static final ExpressionParser PARSER = new SpelExpressionParser();
 
     @Override
-    public Response process(Throwable throwable) {
+    public Response process(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex) {
         ResponseStatus responseStatus = null;
-        if (throwable instanceof BindException exception) {
+        if (ex instanceof BindException exception) {
             responseStatus = this.handleBindException(exception);
-        } else if (throwable instanceof ConstraintViolationException exception) {
+        } else if (ex instanceof ConstraintViolationException exception) {
             responseStatus = this.handleConstraintViolationException(exception);
         }
-        Response response;
+        Response grRresponse;
         if (Objects.nonNull(responseStatus)) {
-            response = responseFactory.newInstance(responseStatus);
+            grRresponse = responseFactory.newInstance(responseStatus);
         } else {
-            response = responseFactory.newFailInstance();
+            grRresponse = responseFactory.newFailInstance();
         }
-        return response;
+        return grRresponse;
     }
 
     @Override
     @ExceptionHandler(value = {BindException.class,
             ValidationException.class,
             MethodArgumentNotValidException.class})
-    public ResponseEntity<Response> exceptionHandler(Throwable throwable) {
-        return super.exceptionHandler(throwable);
+    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
+        return super.exceptionHandler(request, response, handler, exception);
     }
 
     /**

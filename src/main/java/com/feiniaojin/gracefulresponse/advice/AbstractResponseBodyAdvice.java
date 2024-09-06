@@ -42,7 +42,7 @@ public abstract class AbstractResponseBodyAdvice implements ResponseBodyAdvice<O
         boolean hit = true;
         List<ResponseBodyAdvicePredicate> pList = this.predicates;
         for (ResponseBodyAdvicePredicate predicateBeforeHandle : pList) {
-            if (!predicateBeforeHandle.test(returnType, converterType)) {
+            if (!predicateBeforeHandle.shouldApplyTo(returnType, converterType)) {
                 hit = false;
                 break;
             }

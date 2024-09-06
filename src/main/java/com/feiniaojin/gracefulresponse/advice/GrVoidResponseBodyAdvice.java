@@ -33,7 +33,7 @@ public class GrVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impleme
     private AdviceSupport adviceSupport;
 
     @Override
-    public boolean test(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
+    public boolean shouldApplyTo(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
         return Objects.requireNonNull(methodParameter.getMethod()).getReturnType().equals(Void.TYPE)
                 && adviceSupport.isJsonHttpMessageConverter(clazz);
     }
