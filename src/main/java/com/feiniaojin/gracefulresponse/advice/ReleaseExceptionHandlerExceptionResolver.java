@@ -33,6 +33,7 @@ import java.util.Map;
 
 /**
  * 释放异常的ExceptionHandlerExceptionResolver
+ *
  * @author qinyujie
  */
 public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerExceptionResolver
@@ -65,6 +66,7 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
     private final List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
 
     private void initExceptionHandlerAdviceCache() {
+
         if (getApplicationContext() == null) {
             return;
         }
@@ -164,13 +166,11 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
     @Override
     @Nullable
     public ModelAndView doResolveHandlerMethodException(HttpServletRequest request,
-                                                        HttpServletResponse response, @Nullable HandlerMethod handlerMethod, Exception exception) {
+                                                        HttpServletResponse response, HandlerMethod handlerMethod, Exception exception) {
 
         ServletInvocableHandlerMethod exceptionHandlerMethod = getExceptionHandlerMethod(handlerMethod, exception);
-        if (exceptionHandlerMethod == null) {
-            return null;
-        }
 
+        assert exceptionHandlerMethod != null;
         if (this.argumentResolvers != null) {
             exceptionHandlerMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
         }
@@ -231,6 +231,7 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
 
     @Override
     protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
+        assert handlerMethod != null;
         return new ServletInvocableHandlerMethod(handlerMethod.getBean(), handlerMethod.getMethod(), this.applicationContext);
     }
 }

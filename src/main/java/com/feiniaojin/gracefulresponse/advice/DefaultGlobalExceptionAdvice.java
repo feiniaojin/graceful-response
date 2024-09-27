@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.method.HandlerMethod;
 
 import java.util.Map;
 import java.util.Objects;
@@ -113,9 +112,9 @@ public class DefaultGlobalExceptionAdvice extends AbstractControllerAdvice imple
     }
 
     @Override
-    @ExceptionHandler(value = Throwable.class)
-    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
-        return super.exceptionHandler(request, response, handler, exception);
+    @ExceptionHandler(value = Exception.class)
+    public Object exceptionHandler(Exception exception) {
+        return super.exceptionHandler(exception);
     }
 
     @Override

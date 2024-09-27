@@ -16,7 +16,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.HandlerMethod;
 
 /**
  * Graceful Response框架异常处理，处理GracefulException
@@ -40,9 +39,11 @@ public class FrameworkExceptionAdvice extends AbstractControllerAdvice
 
     @Override
     public Response process(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
-        GracefulResponseException gracefulResponseException = (GracefulResponseException) exception;
-        ResponseStatus statusLine = fromGracefulResponseExceptionInstance(gracefulResponseException);
-        return responseFactory.newInstance(statusLine);
+        if(exception instanceof GracefulResponseException gracefulResponseException){
+            ResponseStatus statusLine = fromGracefulResponseExceptionInstance(gracefulResponseException);
+            return responseFactory.newInstance(statusLine);
+        }
+        return null;
     }
 
     private ResponseStatus fromGracefulResponseExceptionInstance(GracefulResponseException exception) {
@@ -55,8 +56,8 @@ public class FrameworkExceptionAdvice extends AbstractControllerAdvice
 
     @Override
     @ExceptionHandler(value = GracefulResponseException.class)
-    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
-        return super.exceptionHandler(request, response, handler, exception);
+    public Object exceptionHandler(Exception exception) {
+        return super.exceptionHandler(exception);
     }
 
     @Override

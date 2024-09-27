@@ -4,7 +4,8 @@ import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.*;
 import com.feiniaojin.gracefulresponse.data.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.lang.Nullable;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
 
 import java.util.List;
@@ -33,7 +34,13 @@ public abstract class AbstractControllerAdvice {
 
     private ControllerAdviceHttpProcessor controllerAdviceHttpProcessor;
 
-    public Object exceptionHandler(HttpServletRequest request, HttpServletResponse response, @Nullable HandlerMethod handler, Exception exception) {
+    protected Object exceptionHandler(Exception exception) {
+
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = requestAttributes.getRequest();
+        HttpServletResponse response = requestAttributes.getResponse();
+        HandlerMethod handler = (HandlerMethod) request.getAttribute(HandlerMethod.class.getName());
+
         //默认认为只要捕获到的，都要进行处理
         boolean hit = true;
         List<ControllerAdvicePredicate> pList = this.predicates;
