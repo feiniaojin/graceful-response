@@ -26,10 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.DisconnectedClientHelper;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 释放异常的ExceptionHandlerExceptionResolver
@@ -65,13 +62,22 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
 
     private final List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
 
-    private void initExceptionHandlerAdviceCache() {
+    /**
+     * 方法名加个0，避免与父类方法名相同
+     */
+    private void initExceptionHandlerAdviceCache0() {
 
         if (getApplicationContext() == null) {
             return;
         }
 
-        List<ControllerAdviceBean> adviceBeans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext());
+        ApplicationContext context = getApplicationContext();
+        if (Objects.isNull(context)) {
+            return;
+        }
+
+        List<ControllerAdviceBean> adviceBeans = ControllerAdviceBean.findAnnotatedBeans(context);
+
         for (ControllerAdviceBean adviceBean : adviceBeans) {
             Class<?> beanType = adviceBean.getBeanType();
             if (beanType == null) {
@@ -101,8 +107,8 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
     @Override
     public void afterPropertiesSet() {
         // Do this first, it may add ResponseBodyAdvice beans
-        initExceptionHandlerAdviceCache();
-        initMessageConverters();
+        initExceptionHandlerAdviceCache0();
+        initMessageConverters0();
 
         if (this.argumentResolvers == null) {
             List<HandlerMethodArgumentResolver> resolvers = getDefaultArgumentResolvers();
@@ -117,7 +123,10 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
                 this.responseBodyAdvice));
     }
 
-    private void initMessageConverters() {
+    /**
+     * 方法加个0，避免与父类方法名相同
+     */
+    private void initMessageConverters0() {
         if (!this.messageConverters.isEmpty()) {
             return;
         }

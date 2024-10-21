@@ -5,6 +5,7 @@ import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdv
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.data.Response;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 非空返回值的处理.
@@ -34,8 +36,8 @@ import java.util.Set;
  * @version 0.1
  * @since 0.1
  */
-@ControllerAdvice
 @Order(value = 1000)
+@ControllerAdvice
 public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice implements ResponseBodyAdvicePredicate,
         ResponseBodyAdviceProcessor {
 
@@ -122,8 +124,13 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
             }
         }
 
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (Objects.isNull(requestAttributes)) {
+            return false;
+        }
+
         //配置了异常放行，就不会再封装了
-        Exception releaseException = (Exception) RequestContextHolder.getRequestAttributes().getAttribute(ReleaseExceptionHandlerExceptionResolver.RELEASE_EXCEPTION_KEY,
+        Exception releaseException = (Exception) requestAttributes.getAttribute(ReleaseExceptionHandlerExceptionResolver.RELEASE_EXCEPTION_KEY,
                 RequestAttributes.SCOPE_REQUEST);
         if (Objects.nonNull(releaseException)
                 && adviceSupport.isMatchExcludeException(releaseException)) {
@@ -132,5 +139,13 @@ public class GrNotVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impl
 
         logger.debug("Graceful Response:非空返回值，需要进行封装");
         return true;
+    }
+
+    @PostConstruct
+    public void init() {
+        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
+        copyOnWriteArrayList.add(this);
+        this.setPredicates(copyOnWriteArrayList);
+        this.setResponseBodyAdviceProcessor(this);
     }
 }

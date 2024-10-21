@@ -5,6 +5,7 @@ import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdv
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -18,14 +19,15 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 国际化处理
  *
  * @author feiniaojin
  */
-@ControllerAdvice
 @Order(2000)
+@ControllerAdvice
 public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice implements ResponseBodyAdvicePredicate, ResponseBodyAdviceProcessor {
 
     private static final String[] EMPTY_ARRAY = new String[0];
@@ -54,5 +56,13 @@ public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice impleme
     @Override
     public boolean shouldApplyTo(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> clazz) {
         return properties.getI18n();
+    }
+
+    @PostConstruct
+    public void init() {
+        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
+        copyOnWriteArrayList.add(this);
+        this.setPredicates(copyOnWriteArrayList);
+        this.setResponseBodyAdviceProcessor(this);
     }
 }

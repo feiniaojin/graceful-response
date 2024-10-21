@@ -3,6 +3,7 @@ package com.feiniaojin.gracefulresponse.advice;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -13,6 +14,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 空返回值的拦截处理.
@@ -21,8 +23,8 @@ import java.util.Objects;
  * @version 0.1
  * @since 0.1
  */
-@ControllerAdvice
 @Order(value = 1000)
+@ControllerAdvice
 public class GrVoidResponseBodyAdvice extends AbstractResponseBodyAdvice implements ResponseBodyAdvicePredicate,
         ResponseBodyAdviceProcessor {
 
@@ -42,4 +44,13 @@ public class GrVoidResponseBodyAdvice extends AbstractResponseBodyAdvice impleme
     public Object process(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         return responseFactory.newSuccessInstance();
     }
+
+    @PostConstruct
+    public void init(){
+        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
+        copyOnWriteArrayList.add(this);
+        this.setPredicates(copyOnWriteArrayList);
+        this.setResponseBodyAdviceProcessor(this);
+    }
+
 }

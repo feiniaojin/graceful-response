@@ -5,7 +5,6 @@ import com.feiniaojin.gracefulresponse.advice.*;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.BeforeControllerAdviceProcess;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.ControllerAdvicePredicate;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.RejectStrategy;
-import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseFactory;
@@ -37,23 +36,13 @@ public class AutoConfig {
     @Bean
     @ConditionalOnMissingBean(GrNotVoidResponseBodyAdvice.class)
     public GrNotVoidResponseBodyAdvice grNotVoidResponseBodyAdvice() {
-        GrNotVoidResponseBodyAdvice notVoidResponseBodyAdvice = new GrNotVoidResponseBodyAdvice();
-        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
-        copyOnWriteArrayList.add(notVoidResponseBodyAdvice);
-        notVoidResponseBodyAdvice.setPredicates(copyOnWriteArrayList);
-        notVoidResponseBodyAdvice.setResponseBodyAdviceProcessor(notVoidResponseBodyAdvice);
-        return notVoidResponseBodyAdvice;
+        return new GrNotVoidResponseBodyAdvice();
     }
 
     @Bean
     @ConditionalOnMissingBean(GrVoidResponseBodyAdvice.class)
     public GrVoidResponseBodyAdvice grVoidResponseBodyAdvice() {
-        GrVoidResponseBodyAdvice voidResponseBodyAdvice = new GrVoidResponseBodyAdvice();
-        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
-        copyOnWriteArrayList.add(voidResponseBodyAdvice);
-        voidResponseBodyAdvice.setPredicates(copyOnWriteArrayList);
-        voidResponseBodyAdvice.setResponseBodyAdviceProcessor(voidResponseBodyAdvice);
-        return voidResponseBodyAdvice;
+        return new GrVoidResponseBodyAdvice();
     }
 
     @Bean
@@ -86,12 +75,7 @@ public class AutoConfig {
     @Bean
     @ConditionalOnProperty(prefix = "graceful-response", name = "i18n", havingValue = "true")
     public GrI18nResponseBodyAdvice grI18nAdvice() {
-        GrI18nResponseBodyAdvice i18nResponseBodyAdvice = new GrI18nResponseBodyAdvice();
-        CopyOnWriteArrayList<ResponseBodyAdvicePredicate> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
-        copyOnWriteArrayList.add(i18nResponseBodyAdvice);
-        i18nResponseBodyAdvice.setPredicates(copyOnWriteArrayList);
-        i18nResponseBodyAdvice.setResponseBodyAdviceProcessor(i18nResponseBodyAdvice);
-        return i18nResponseBodyAdvice;
+        return new GrI18nResponseBodyAdvice();
     }
 
     /**
