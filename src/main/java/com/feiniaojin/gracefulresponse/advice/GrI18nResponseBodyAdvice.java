@@ -7,6 +7,8 @@ import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
@@ -28,6 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Order(2000)
 @ControllerAdvice
+@ConditionalOnProperty(prefix = "graceful-response", name = "i18n", havingValue = "true")
 public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice implements ResponseBodyAdvicePredicate, ResponseBodyAdviceProcessor {
 
     private static final String[] EMPTY_ARRAY = new String[0];
