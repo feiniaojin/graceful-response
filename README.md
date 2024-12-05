@@ -1,29 +1,18 @@
 <div align=center><img src="./assets/project-name.png"></div>
 
-<a href="https://hellogithub.com/repository/1fc5b7426d9a4398b53719468a2ae16a" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=1fc5b7426d9a4398b53719468a2ae16a&claim_uid=CGoRi0Ug35dqj42" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px; " width="250" height="54" /></a>
-
 ![](https://img.shields.io/github/license/feiniaojin/graceful-response)
 [![GitHub stars](https://img.shields.io/github/stars/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/network)
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 ![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin/graceful-response)
 
-<!-- TOC -->
+# 作者新书推荐
 
-* [1. 项目介绍](#1-项目介绍)
-* [2. 核心功能](#2-核心功能)
-* [3. 感谢](#3-感谢)
-* [4. 快速入门](#4-快速入门)
-    * [4.1 引入Graceful Response](#41-引入graceful-response)
-    * [4.2 开启 Graceful Response](#42-开启-graceful-response)
-    * [4.4 代码编写](#44-代码编写)
-        * [4.4.1 Controller层](#441-controller层)
-        * [4.4.2 Service 层](#442-service-层)
-* [5. 使用文档](#5-使用文档)
-* [6. 交流和反馈](#6-交流和反馈)
-* [7. 贡献者](#7-贡献者)
+本项目作者的新书《悟道领域驱动设计》目前已上架各大电商平台，感兴趣的朋友可以帮忙支持一下。
 
-<!-- TOC -->
+[悟道领域驱动设计](assets/book.png)
+
+购买链接：https://item.jd.com/14835288.html
 
 # 1. 项目介绍
 
