@@ -10,7 +10,7 @@
 
 本项目作者的新书《悟道领域驱动设计》目前已上架各大电商平台，感兴趣的朋友可以帮忙支持一下。
 
-![悟道领域驱动设计](assets/book.png)
+<img alt="悟道领域驱动设计" src="assets/book.png" style="width: 50%">
 
 购买链接：https://item.jd.com/14835288.html
 
@@ -53,20 +53,21 @@ star!
 
 感谢以下公众号或者自媒体对本项目的推广。
 
-| 自媒体名称      | 类型  | 链接                                                  |
-|------------|-----|-----------------------------------------------------|
-| 芋道源码       | 公众号 | <https://mp.weixin.qq.com/s/VG6n5IsIDez8iZkY8JK6QQ> |
-| Java 面试那些事 | 公众号 | <https://mp.weixin.qq.com/s/V9MhNVj3uQRrmnrfy9KkAQ> |
-| 编程奇点       | 公众号 | <https://mp.weixin.qq.com/s/cQWgivkpuXGEijRR1WRt0g> |
-| macrozheng | 公众号 | <https://mp.weixin.qq.com/s/XAHBzVRFuMJTEh8Y1Xvv4g> |
-| Java 后端技术  | 公众号 | <https://mp.weixin.qq.com/s/4ssfZftGUqq0l9nW9lShLA> |
-| Java 高性能架构 | 公众号 | <https://mp.weixin.qq.com/s/XImjkUExBHEklgrLnrINyw> |
-| 技术老男孩      | 公众号 | <https://mp.weixin.qq.com/s/6gafudNaNTK1FRIdvNMXXw> |
-| Java 知音    | 公众号 | <https://mp.weixin.qq.com/s/ZNmpTZnL2XqsPN2ayq0_4Q> |
-| Java123    | 公众号 | <https://mp.weixin.qq.com/s/MF0PaawFILzNBMM78O_Pnw> |
-| 程序员追风      | 公众号 | <https://mp.weixin.qq.com/s/wlY0phnXEiO7E_basxsWJw> |
-| Spring源码项目进行时 | 掘金 | <https://juejin.cn/post/7367195057559371788> |
-| 京东云开发者 | 掘金 | <https://juejin.cn/post/7405158247592427560> |
+| 自媒体名称         | 类型  | 链接                                                  |
+|---------------|-----|-----------------------------------------------------|
+| 芋道源码          | 公众号 | <https://mp.weixin.qq.com/s/VG6n5IsIDez8iZkY8JK6QQ> |
+| Java 面试那些事    | 公众号 | <https://mp.weixin.qq.com/s/V9MhNVj3uQRrmnrfy9KkAQ> |
+| 编程奇点          | 公众号 | <https://mp.weixin.qq.com/s/cQWgivkpuXGEijRR1WRt0g> |
+| macrozheng    | 公众号 | <https://mp.weixin.qq.com/s/XAHBzVRFuMJTEh8Y1Xvv4g> |
+| Java 后端技术     | 公众号 | <https://mp.weixin.qq.com/s/4ssfZftGUqq0l9nW9lShLA> |
+| Java 高性能架构    | 公众号 | <https://mp.weixin.qq.com/s/XImjkUExBHEklgrLnrINyw> |
+| 技术老男孩         | 公众号 | <https://mp.weixin.qq.com/s/6gafudNaNTK1FRIdvNMXXw> |
+| Java 知音       | 公众号 | <https://mp.weixin.qq.com/s/ZNmpTZnL2XqsPN2ayq0_4Q> |
+| Java123       | 公众号 | <https://mp.weixin.qq.com/s/MF0PaawFILzNBMM78O_Pnw> |
+| 程序员追风         | 公众号 | <https://mp.weixin.qq.com/s/wlY0phnXEiO7E_basxsWJw> |
+| Spring源码项目进行时 | 掘金  | <https://juejin.cn/post/7367195057559371788>        |
+| 京东云开发者        | 掘金  | <https://juejin.cn/post/7405158247592427560>        |
+
 # 4. 快速入门
 
 ## 4.1 引入 Graceful Response
