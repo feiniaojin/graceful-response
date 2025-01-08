@@ -185,11 +185,18 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
             }
             clazz = object.getClass();
         }
+        boolean fieldFound = true;
         try {
             field = clazz.getDeclaredField(fieldName);
         } catch (Exception exception) {
-            logger.error("无法根据属性名找到对应的属性,fieldName={}", fieldName);
-            throw new GracefulResponseException("获得校验不通过的属性失败,fieldName={}", fieldName, exception);
+            logger.debug("无法根据属性名找到对应的属性,准备递归查找，fieldName={}", fieldName);
+            fieldFound = false;
+        }
+
+        //只有当前类没有该字段，才会递归找父类的属性
+        if (Boolean.FALSE.equals(fieldFound)) {
+            field = findFieldFromParentRecursively(clazz, fieldName);
+            logger.debug("递归查找父类属性成功，fieldName={}", fieldName);
         }
 
         validateStatusCode = field.getAnnotation(ValidationStatusCode.class);
@@ -213,6 +220,31 @@ public class DefaultValidationExceptionAdvice extends AbstractControllerAdvice
         }
 
         return null;
+    }
+
+    /**
+     * 递归查找父类属性
+     *
+     * @return
+     */
+    private Field findFieldFromParentRecursively(Class<?> clazz, String fieldName) {
+        Class<?> superclass = clazz.getSuperclass();
+        Field field = null;
+        while (Objects.nonNull(superclass)) {
+            try {
+                field = superclass.getDeclaredField(fieldName);
+                logger.debug("递归查找属性,已找到，fieldName={},superclass={}", fieldName, superclass);
+                break;
+            } catch (Exception exception) {
+                logger.debug("无法根据属性名找到对应的属性,准备递归查找，fieldName={},superclass={}", fieldName, superclass);
+            }
+            superclass = superclass.getSuperclass();
+        }
+        //父类也没找到属性，抛异常
+        if (Objects.isNull(field)) {
+            throw new GracefulResponseException("获得校验不通过的属性失败,fieldName={}", fieldName);
+        }
+        return field;
     }
 
     private String fieldSimpleName(String fieldName) {

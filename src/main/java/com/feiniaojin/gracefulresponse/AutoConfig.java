@@ -147,6 +147,9 @@ public class AutoConfig {
 
     @Bean
     public ExceptionHandlerExceptionResolver releaseExceptionHandlerExceptionResolver() {
+
         return new ReleaseExceptionHandlerExceptionResolver();
     }
+
+
 }

@@ -238,7 +238,6 @@ public class ReleaseExceptionHandlerExceptionResolver extends ExceptionHandlerEx
         }
     }
 
-    @Override
     protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
         assert handlerMethod != null;
         return new ServletInvocableHandlerMethod(handlerMethod.getBean(), handlerMethod.getMethod(), this.applicationContext);
