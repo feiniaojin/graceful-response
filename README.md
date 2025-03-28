@@ -5,6 +5,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/feiniaojin/graceful-response)](https://github.com/feiniaojin/graceful-response/network)
 ![](https://img.shields.io/github/issues/feiniaojin/graceful-response)
 ![Maven Central](https://img.shields.io/maven-central/v/com.feiniaojin/graceful-response)
+<a href="https://hellogithub.com/repository/1fc5b7426d9a4398b53719468a2ae16a" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=1fc5b7426d9a4398b53719468a2ae16a&claim_uid=CGoRi0Ug35dqj42&theme=small" alt="Featured｜HelloGitHub" /></a>
 
 # 作者新书推荐
 
